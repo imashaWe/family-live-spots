@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:family_live_spots/screens/tabs/places/place_search.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -43,9 +44,27 @@ class _PlaceAddState extends State<PlaceAdd> {
     if (_frmKey.currentState!.validate()) {}
   }
 
+  void _findMyLocation() {}
   @override
   Widget build(BuildContext context) {
     final h = MediaQuery.of(context).size.height;
+    Widget mapIconButton(
+            {required IconData icon,
+            required foregroundColor,
+            required Function onTap}) =>
+        Padding(
+            padding: EdgeInsets.all(5),
+            child: GestureDetector(
+                onTap: () => onTap,
+                child: CircleAvatar(
+                  radius: 20,
+                  foregroundColor: foregroundColor,
+                  backgroundColor: Colors.white,
+                  child: Icon(
+                    icon,
+                    size: 20,
+                  ),
+                )));
     return Scaffold(
       appBar: AppBar(
         title: Text("Add place"),
@@ -91,7 +110,25 @@ class _PlaceAddState extends State<PlaceAdd> {
                                 _controller.complete(controller);
                               },
                             ),
-                          )
+                          ),
+                          Positioned(
+                              top: 10,
+                              right: 5,
+                              child: mapIconButton(
+                                foregroundColor: Colors.blue,
+                                icon: Icons.search,
+                                onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => PlaceSearch())),
+                              )),
+                          Positioned(
+                              top: 60,
+                              right: 5,
+                              child: mapIconButton(
+                                  foregroundColor: Colors.green,
+                                  icon: Icons.my_location,
+                                  onTap: _findMyLocation))
                         ],
                       )),
                 ],
