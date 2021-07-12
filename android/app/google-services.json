@@ -1,0 +1,114 @@
+{
+  "project_info": {
+    "project_number": "346740720686",
+    "firebase_url": "https://filtersmusic-d259d.firebaseio.com",
+    "project_id": "filtersmusic-d259d",
+    "storage_bucket": "filtersmusic-d259d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:346740720686:android:8ed83ec80473b03f0c4bbf",
+        "android_client_info": {
+          "package_name": "com.family.livespots"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "346740720686-dma8d8ncpsbjaocslnt4b55sck7p9q5u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDidyOsW-K3y3QvG3qZlI0Xop45qsei5H4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "346740720686-dma8d8ncpsbjaocslnt4b55sck7p9q5u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:346740720686:android:3f581f10b1338bfe",
+        "android_client_info": {
+          "package_name": "com.photos.articlesguide"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "346740720686-nj4kk4c1boev4cm5t583di9bulgnnmo8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.photos.articlesguide",
+            "certificate_hash": "d87f2a02c48f8ad31f8772f80e569cd693106c71"
+          }
+        },
+        {
+          "client_id": "346740720686-dma8d8ncpsbjaocslnt4b55sck7p9q5u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDidyOsW-K3y3QvG3qZlI0Xop45qsei5H4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "346740720686-dma8d8ncpsbjaocslnt4b55sck7p9q5u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:346740720686:android:848630174ada967f0c4bbf",
+        "android_client_info": {
+          "package_name": "lk.imasha.family_live_spots"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "346740720686-sevn7kr5vacl9nfsg7sfnfa9kvp94p7k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "lk.imasha.family_live_spots",
+            "certificate_hash": "ac5686f5e5197fd71940d9e4fc54ffee495bb33f"
+          }
+        },
+        {
+          "client_id": "346740720686-dma8d8ncpsbjaocslnt4b55sck7p9q5u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDidyOsW-K3y3QvG3qZlI0Xop45qsei5H4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "346740720686-dma8d8ncpsbjaocslnt4b55sck7p9q5u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
