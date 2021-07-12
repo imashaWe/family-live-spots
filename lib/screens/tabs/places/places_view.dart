@@ -10,13 +10,19 @@ class PlacesView extends StatefulWidget {
 }
 
 class _PlacesViewState extends State<PlacesView> {
-  Widget placeTypeCard({required Icon icon, required String name}) => Card(
+  Widget placeTypeCard(
+          {required Icon icon, required String title, String? name}) =>
+      Card(
         child: ListTile(
           leading: icon,
-          title: Text(name),
+          title: Text(title),
           trailing: Icon(Icons.arrow_forward_ios_sharp),
           onTap: () => Navigator.push(
-              context, MaterialPageRoute(builder: (_) => PlaceAdd())),
+              context,
+              MaterialPageRoute(
+                  builder: (_) => PlaceAdd(
+                        name: name,
+                      ))),
         ),
       );
   @override
@@ -29,13 +35,18 @@ class _PlacesViewState extends State<PlacesView> {
         padding: EdgeInsets.all(10),
         child: Column(
           children: [
-            placeTypeCard(icon: Icon(Icons.home), name: "Add your home"),
-            placeTypeCard(icon: Icon(Icons.school), name: "Add your school"),
+            placeTypeCard(
+                icon: Icon(Icons.home), title: "Add your home", name: 'home'),
+            placeTypeCard(
+                icon: Icon(Icons.school),
+                title: "Add your school",
+                name: 'school'),
             placeTypeCard(
                 icon: Icon(FontAwesomeIcons.businessTime),
-                name: "Add your office"),
+                title: "Add your office",
+                name: 'office'),
             placeTypeCard(
-                icon: Icon(Icons.location_pin), name: "Add customer place"),
+                icon: Icon(Icons.location_pin), title: "Add customer place"),
           ],
         ),
       ),

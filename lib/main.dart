@@ -18,6 +18,21 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      routes: {
+        '/home': (_) => TabView(),
+        '/places': (_) => TabView(
+              activeTab: 1,
+            ),
+        '/map': (_) => TabView(
+              activeTab: 2,
+            ),
+        '/history': (_) => TabView(
+              activeTab: 3,
+            ),
+        '/settings': (_) => TabView(
+              activeTab: 4,
+            ),
+      },
       theme: ThemeData(
           primaryColor: Constans.primary_color,
           appBarTheme: AppBarTheme(centerTitle: true),
