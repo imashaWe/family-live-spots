@@ -4,21 +4,21 @@ import 'package:family_live_spots/screens/widget/or_divider.dart';
 import 'package:family_live_spots/services/member_service.dart';
 import 'package:flutter/material.dart';
 
-class AddByPhone extends StatefulWidget {
+class AddByEmail extends StatefulWidget {
   final bool isParent;
-  AddByPhone({Key? key, required this.isParent}) : super(key: key);
+  AddByEmail({Key? key, required this.isParent}) : super(key: key);
 
   @override
   _MemberAddDialogState createState() => _MemberAddDialogState();
 }
 
-class _MemberAddDialogState extends State<AddByPhone> {
+class _MemberAddDialogState extends State<AddByEmail> {
   final TextEditingController _phoneText = TextEditingController();
   bool _isLoading = false;
   void _add() {
     if (_phoneText.text.isEmpty) return;
     _setLoading(true);
-    MemberService.addMember('lYKAV6gTdNPMSYDJVNYRG4or2Fv2', widget.isParent)
+    MemberService.addMemberByEmail(_phoneText.text, widget.isParent)
         .then((value) {
           AlertMessage.topSnackbarSuccess(
               message: 'You have been added a new family member!',
@@ -42,7 +42,7 @@ class _MemberAddDialogState extends State<AddByPhone> {
       childern: [
         TextField(
           controller: _phoneText,
-          decoration: InputDecoration(labelText: "Code"),
+          decoration: InputDecoration(labelText: "Email"),
         ),
         SizedBox(
           height: 10,

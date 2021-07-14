@@ -96,6 +96,7 @@ class _PlaceAddState extends State<PlaceAdd> {
 
   void _findMyLocation() {
     bg.BackgroundGeolocation.getCurrentPosition().then((l) {
+      l.timestamp;
       final loc = LatLng(l.coords.latitude, l.coords.longitude);
       _focusLocation(loc);
       _onTapLocation(loc);

@@ -6,6 +6,19 @@ import 'package:family_live_spots/utility/functions.dart';
 class MemberService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  static Future addMemberByEmail(String email, bool isParent) async {
+    try {
+      final r = await _firestore
+          .collection('User')
+          .where('email', isEqualTo: email)
+          .get();
+      if (r.docs.isEmpty) throw "This email dosen't exist!";
+      await addMember(r.docs.first.data()['uid'], isParent);
+    } on FirebaseException catch (e) {
+      throw e;
+    }
+  }
+
   static Future addMember(String memberID, bool isParent) async {
     try {
       await _addMember(AuthService.user!.uid, memberID, isParent);
@@ -29,6 +42,8 @@ class MemberService {
 
   static Future<List<UserProfile>> fetchAllMembers() async {
     final user = await AuthService.getProfile();
+    if (user.members.isEmpty) return [];
+
     final res = await _firestore
         .collection('User')
         .where('uid', whereIn: user.members.map((e) => e.uid).toList())
@@ -36,5 +51,15 @@ class MemberService {
     return res.docs
         .map((e) => UserProfile.fromJson(parseDataWithID(e)))
         .toList();
+  }
+
+  static Stream<List<UserProfile>> membersSnapshot(List<String> uids) {
+    return _firestore
+        .collection('User')
+        .where('uid', whereIn: uids)
+        .snapshots()
+        .map((q) => q.docs
+            .map((e) => UserProfile.fromJson(parseDataWithID(e)))
+            .toList());
   }
 }

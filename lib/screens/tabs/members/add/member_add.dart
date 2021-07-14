@@ -1,7 +1,7 @@
 import 'package:family_live_spots/services/member_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'add_by_phone.dart';
+import 'add_by_emaill.dart';
 
 class MemberAdd extends StatelessWidget {
   const MemberAdd({Key? key}) : super(key: key);
@@ -60,7 +60,7 @@ class MemberAdd extends StatelessWidget {
                   "You'll be a parenet for this conatct who can't invisible without your permisson",
               onTap: () => showDialog(
                   context: context,
-                  builder: (_) => AddByPhone(
+                  builder: (_) => AddByEmail(
                         isParent: true,
                       ))),
           memberTypeCard(
@@ -70,7 +70,7 @@ class MemberAdd extends StatelessWidget {
                   "You can't be invisible from your parents without this permission",
               onTap: () => showDialog(
                   context: context,
-                  builder: (_) => AddByPhone(
+                  builder: (_) => AddByEmail(
                         isParent: false,
                       ))),
           // memberTypeCard(

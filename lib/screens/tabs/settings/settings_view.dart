@@ -23,8 +23,8 @@ class _SettingsViewState extends State<SettingsView> {
 
   void _logout() {
     AuthService.logout()
-        .then((value) => Navigator.pushAndRemoveUntil(context,
-            MaterialPageRoute(builder: (_) => AuthView()), (route) => false))
+        .then((value) => Navigator.pushNamedAndRemoveUntil(
+            context, '/auth', (route) => false))
         .catchError((e) => print(e));
   }
 
@@ -62,7 +62,7 @@ class _SettingsViewState extends State<SettingsView> {
                       userProfile: snapshot.data,
                     ),
                     title: Text(snapshot.data!.name),
-                    subtitle: Text(snapshot.data!.phone),
+                    subtitle: Text(snapshot.data!.email),
                     trailing: Icon(Icons.edit),
                     onTap: () => Navigator.push(
                         context,

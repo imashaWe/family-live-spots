@@ -1,5 +1,7 @@
 import 'package:family_live_spots/screens/auth/auth_view.dart';
 import 'package:family_live_spots/screens/auth/edit_profile_view.dart';
+import 'package:family_live_spots/screens/auth/sign_in.dart';
+import 'package:family_live_spots/screens/auth/sign_up.dart';
 import 'package:family_live_spots/services/auth_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +21,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       routes: {
+        '/sign-in': (_) => SignIn(),
+        '/sign-up': (_) => SignUp(),
         '/home': (_) => TabView(),
         '/places': (_) => TabView(
               activeTab: 1,
@@ -44,7 +48,7 @@ class MyApp extends StatelessWidget {
               style: ButtonStyle(
                   backgroundColor:
                       MaterialStateProperty.all(Constans.primary_color)))),
-      home: AuthService.isLoggedIn ? TabView() : AuthView(),
+      home: AuthService.isLoggedIn ? TabView() : SignIn(),
     );
   }
 }
