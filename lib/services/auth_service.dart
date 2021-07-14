@@ -24,8 +24,10 @@ class AuthService {
     try {
       await _firestore.collection('User').doc(user!.uid).set({
         'name': name,
+        'uid': user!.uid,
         'createdAt': DateTime.now(),
-        'phone': user!.phoneNumber
+        'phone': user!.phoneNumber,
+        'members': []
       });
       if (imagePath != null) await _uploadPhoto(imagePath);
       return;

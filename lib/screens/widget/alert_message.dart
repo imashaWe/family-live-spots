@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 //import 'package:fluttertoast/fluttertoast.dart';
 
-// import 'package:top_snackbar_flutter/top_snack_bar.dart';
-// import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-// import 'package:top_snackbar_flutter/tap_bounce_container.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/tap_bounce_container.dart';
 
 class AlertMessage {
   static void snakbarError(
@@ -14,21 +14,23 @@ class AlertMessage {
           {required String message, required GlobalKey<ScaffoldState> key}) =>
       _setSnack(key, message, false);
 
-  // static void topSnackbarError({String message, BuildContext context}) =>
-  //     showTopSnackBar(
-  //       context,
-  //       CustomSnackBar.error(
-  //         message: message,
-  //       ),
-  //     );
+  static void topSnackbarError(
+          {required String message, required BuildContext context}) =>
+      showTopSnackBar(
+        context,
+        CustomSnackBar.error(
+          message: message,
+        ),
+      );
 
-  // static void topSnackbarSuccess({String message, BuildContext context}) =>
-  //     showTopSnackBar(
-  //       context,
-  //       CustomSnackBar.success(
-  //         message: message,
-  //       ),
-  //     );
+  static void topSnackbarSuccess(
+          {required String message, required BuildContext context}) =>
+      showTopSnackBar(
+        context,
+        CustomSnackBar.success(
+          message: message,
+        ),
+      );
 
   static void _setSnack(GlobalKey<ScaffoldState> key, String m, bool isError) {
     final SnackBar snackBar = SnackBar(

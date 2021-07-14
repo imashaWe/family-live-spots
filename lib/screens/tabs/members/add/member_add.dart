@@ -1,13 +1,10 @@
+import 'package:family_live_spots/services/member_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'member_add_dialog.dart';
+import 'add_by_phone.dart';
 
 class MemberAdd extends StatelessWidget {
   const MemberAdd({Key? key}) : super(key: key);
-
-  void _onTap(context) {
-    showDialog(context: context, builder: (_) => MemberAddDialog());
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +16,10 @@ class MemberAdd extends StatelessWidget {
             required String title,
             required String subtitle,
             required Function onTap}) =>
-        Card(
-          elevation: 5,
-          child: GestureDetector(
-              onTap: () => onTap(),
+        GestureDetector(
+          onTap: () => onTap(),
+          child: Card(
+              elevation: 5,
               child: SizedBox(
                   height: h / 6,
                   width: w * .8,
@@ -61,18 +58,26 @@ class MemberAdd extends StatelessWidget {
               title: 'Child',
               subtitle:
                   "You'll be a parenet for this conatct who can't invisible without your permisson",
-              onTap: () => _onTap(context)),
+              onTap: () => showDialog(
+                  context: context,
+                  builder: (_) => AddByPhone(
+                        isParent: true,
+                      ))),
           memberTypeCard(
               image: 'assets/images/parent.svg',
               title: 'Parent',
               subtitle:
                   "You can't be invisible from your parents without this permission",
-              onTap: () => _onTap(context)),
-          memberTypeCard(
-              image: 'assets/images/invite-code.svg',
-              title: 'Invitation Code',
-              subtitle: "Enter your invitation code here.",
-              onTap: () => _onTap(context)),
+              onTap: () => showDialog(
+                  context: context,
+                  builder: (_) => AddByPhone(
+                        isParent: false,
+                      ))),
+          // memberTypeCard(
+          //     image: 'assets/images/invite-code.svg',
+          //     title: 'Invitation Code',
+          //     subtitle: "Enter your invitation code here.",
+          //     onTap: () => _onTap(context)),
         ]),
       ),
     );

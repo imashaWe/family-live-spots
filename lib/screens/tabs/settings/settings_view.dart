@@ -15,13 +15,6 @@ class SettingsView extends StatefulWidget {
 
 class _SettingsViewState extends State<SettingsView> {
   Future<UserProfile>? _future;
-  Widget optionCard({required String option, required Function onTap}) => Card(
-        child: ListTile(
-          title: Text(option),
-          trailing: Icon(Icons.arrow_forward_ios),
-          onTap: () => onTap,
-        ),
-      );
   @override
   void initState() {
     _future = AuthService.getProfile();
@@ -29,12 +22,22 @@ class _SettingsViewState extends State<SettingsView> {
   }
 
   void _logout() {
-    AuthService.logout().then((value) => Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (_) => AuthView()), (route) => false));
+    AuthService.logout()
+        .then((value) => Navigator.pushAndRemoveUntil(context,
+            MaterialPageRoute(builder: (_) => AuthView()), (route) => false))
+        .catchError((e) => print(e));
   }
 
   @override
   Widget build(BuildContext context) {
+    Widget optionCard({required String option, required Function onTap}) =>
+        Card(
+          child: ListTile(
+            title: Text(option),
+            trailing: Icon(Icons.arrow_forward_ios),
+            onTap: () => onTap(),
+          ),
+        );
     return Scaffold(
       appBar: AppBar(
         title: Text("Settings"),
