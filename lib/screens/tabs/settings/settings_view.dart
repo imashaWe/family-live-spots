@@ -24,7 +24,7 @@ class _SettingsViewState extends State<SettingsView> {
   void _logout() {
     AuthService.logout()
         .then((value) => Navigator.pushNamedAndRemoveUntil(
-            context, '/auth', (route) => false))
+            context, '/sign-in', (route) => false))
         .catchError((e) => print(e));
   }
 

@@ -21,18 +21,29 @@ class _MapViewState extends State<MapView> {
 
   Set<Marker> _markers = {};
 
+  void _onTapUserProfile(UserProfile user) {
+    if (user.lastLocation != null) {
+      _focusLocation(user.lastLocation!.latLng);
+    }
+  }
+
   void _onMemberLocationListener(List<UserProfile> user) {
     _markers.clear();
-    user.forEach((u) => setState(() => _markers.add(Marker(
-          // This marker id can be anything that uniquely identifies each marker.
-          markerId: MarkerId(u.id),
-          position: u.lastLocation!.latLng,
-          infoWindow: InfoWindow(
-            title: u.name,
-            snippet: '5 Star Rating',
-          ),
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRose),
-        ))));
+    user.forEach((u) {
+      if (u.lastLocation != null) {
+        setState(() => _markers.add(Marker(
+              // This marker id can be anything that uniquely identifies each marker.
+              markerId: MarkerId(u.id),
+              position: u.lastLocation!.latLng,
+              infoWindow: InfoWindow(
+                title: u.name,
+                snippet: 'Last update ',
+              ),
+              icon: BitmapDescriptor.defaultMarkerWithHue(
+                  BitmapDescriptor.hueRose),
+            )));
+      }
+    });
   }
 
   void _focusLocation(LatLng loc) async {
@@ -100,13 +111,9 @@ class _MapViewState extends State<MapView> {
                                       final item = snapshot.data![i];
 
                                       return ProfileImage(
-                                        size: h * .12 * .35,
-                                        userProfile: item,
-                                        onTap: () {
-                                          _focusLocation(
-                                              item.lastLocation!.latLng);
-                                        },
-                                      );
+                                          size: h * .12 * .35,
+                                          userProfile: item,
+                                          onTap: () => _onTapUserProfile(item));
                                     })),
                             CircleAvatar(
                               radius: h * .12 * .35,
