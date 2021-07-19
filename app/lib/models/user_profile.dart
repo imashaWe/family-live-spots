@@ -65,7 +65,6 @@ class UserLocation {
   final double accuracy;
   final double speed;
   final DateTime dateTime;
-
   UserLocation(
       {required this.accuracy,
       required this.geoPoint,
@@ -73,10 +72,10 @@ class UserLocation {
       required this.dateTime});
   factory UserLocation.fromJson(Map<String, dynamic> json) {
     return UserLocation(
-      accuracy: json['accuracy'],
-      geoPoint: json['geoPoint'],
-      speed: json['speed'],
-      dateTime: json['dateTime'].toDate(),
+      accuracy: 0.0,
+      geoPoint: json['coords']['geoPoint'],
+      speed: json['coords']['speed'],
+      dateTime: json['datetime'].toDate(),
     );
   }
   factory UserLocation.fromCoodrs(bg.Location location) {

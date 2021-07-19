@@ -51,4 +51,12 @@ class LocationService {
       print(e);
     }
   }
+
+  static Future<List<UserLocation>> getUserLocationHistory() async {
+    final r = await _firestore
+        .collection("Location")
+        .where("uid", isEqualTo: AuthService.user!.uid)
+        .get();
+    return r.docs.map((e) => UserLocation.fromJson(e.data())).toList();
+  }
 }

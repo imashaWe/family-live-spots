@@ -74,6 +74,7 @@ class _MapViewState extends State<MapView> {
     AuthService.getProfile().then((u) =>
         MemberService.membersSnapshot(u.members.map((e) => e.uid).toList())
             .listen(_onMemberLocationListener));
+    LocationService.startTracking();
     super.initState();
   }
 
@@ -132,13 +133,10 @@ class _MapViewState extends State<MapView> {
                                         onTap: () => _onTapUserProfile(item));
                                   })),
                           GestureDetector(
-                              onTap: () {
-                                LocationService.startTracking();
-                              },
-                              // onTap: () => Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //         builder: (_) => MemberAdd())),
+                              onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => MemberAdd())),
                               child: CircleAvatar(
                                 radius: h * .12 * .35,
                                 child: Icon(Icons.add),
@@ -150,13 +148,6 @@ class _MapViewState extends State<MapView> {
             )),
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          LocationService.sync();
-        },
-        label: Text('To the lake!'),
-        icon: Icon(Icons.directions_boat),
       ),
     );
   }
