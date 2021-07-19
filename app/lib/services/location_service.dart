@@ -1,0 +1,54 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:family_live_spots/models/user_profile.dart';
+import 'package:family_live_spots/services/auth_service.dart';
+import 'package:family_live_spots/utility/env.dart';
+import 'package:flutter_background_geolocation/flutter_background_geolocation.dart'
+    as bg;
+
+class LocationService {
+  static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  static Future syncMyCurrentLocation() async {
+    try {
+      final l = await bg.BackgroundGeolocation.getCurrentPosition();
+      await _firestore
+          .collection("User")
+          .doc(AuthService.user!.uid)
+          .update({'lastLocation': UserLocation.fromCoodrs(l).toJSON});
+    } catch (e) {}
+  }
+
+  static Future startTracking() async {
+    bg.BackgroundGeolocation.ready(bg.Config(
+            url: ENV.LOCATION_API,
+            autoSync: true,
+            autoSyncThreshold: 5,
+            batchSync: true,
+            maxBatchSize: 10,
+            distanceFilter: 10,
+            // headers: {"AUTHENTICATION_TOKEN": "23kasdlfkjlksjflkasdZIds"},
+            params: {"uid": AuthService.user!.uid},
+            locationsOrderDirection: "DESC",
+            maxDaysToPersist: 14))
+        .then((bg.State state) {
+      print('[ready] success: ${state}');
+      if (!state.enabled) {
+        ////
+        // 3.  Start the plugin.
+        //
+        bg.BackgroundGeolocation.start();
+      }
+    });
+  }
+
+  static Future stopTracking() async {
+    await bg.BackgroundGeolocation.stop();
+  }
+
+  static Future sync() async {
+    try {
+      await bg.BackgroundGeolocation.sync();
+    } catch (e) {
+      print(e);
+    }
+  }
+}

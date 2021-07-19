@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_background_geolocation/flutter_background_geolocation.dart'
+    as bg;
 
 class UserProfile {
   final String id;
@@ -77,6 +79,19 @@ class UserLocation {
       dateTime: json['dateTime'].toDate(),
     );
   }
-
+  factory UserLocation.fromCoodrs(bg.Location location) {
+    return UserLocation(
+      accuracy: location.coords.accuracy,
+      geoPoint: GeoPoint(location.coords.latitude, location.coords.longitude),
+      speed: location.coords.speed,
+      dateTime: DateTime.parse(location.timestamp),
+    );
+  }
+  Map<String, dynamic> get toJSON => {
+        'accuracy': accuracy,
+        'geoPoint': geoPoint,
+        'speed': speed,
+        'dateTime': dateTime
+      };
   LatLng get latLng => LatLng(this.geoPoint.latitude, this.geoPoint.longitude);
 }

@@ -24,6 +24,9 @@ class MyApp extends StatelessWidget {
         '/sign-in': (_) => SignIn(),
         '/sign-up': (_) => SignUp(),
         '/home': (_) => TabView(),
+        '/members': (_) => TabView(
+              activeTab: 0,
+            ),
         '/places': (_) => TabView(
               activeTab: 1,
             ),

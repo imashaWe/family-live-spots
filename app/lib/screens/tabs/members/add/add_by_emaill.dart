@@ -23,7 +23,8 @@ class _MemberAddDialogState extends State<AddByEmail> {
           AlertMessage.topSnackbarSuccess(
               message: 'You have been added a new family member!',
               context: context);
-          Navigator.pop(context);
+          Navigator.pushNamedAndRemoveUntil(
+              context, '/members', (route) => false);
         })
         .catchError((e) => AlertMessage.topSnackbarError(
             message: 'Member not found or something went wrong!',

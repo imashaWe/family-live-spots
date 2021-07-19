@@ -9,13 +9,13 @@ import 'tabs/history/history_view.dart';
 
 class TabView extends StatefulWidget {
   final int activeTab;
-  TabView({this.activeTab = 0});
+  TabView({this.activeTab = 2});
   @override
   State<StatefulWidget> createState() => _TabViewState();
 }
 
 class _TabViewState extends State<TabView> {
-  int _activeTab = 0;
+  int _activeTab = 2;
 
   @override
   void initState() {
