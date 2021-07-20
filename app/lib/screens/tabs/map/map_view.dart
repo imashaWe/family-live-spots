@@ -71,7 +71,6 @@ class _MapViewState extends State<MapView> {
   void _initMyLocation() {
     bg.BackgroundGeolocation.getCurrentPosition()
         .then((l) => _focusLocation(parseLatLngFromCoords(l.coords)));
-    //   LocationService.syncMyCurrentLocation();
   }
 
   @override
@@ -92,7 +91,8 @@ class _MapViewState extends State<MapView> {
       appBar: AppBar(
         title: Text("Family Live Spots"),
       ),
-      body: Stack(
+      body: SafeArea(
+          child: Stack(
         children: [
           Positioned.fill(
               child: GoogleMap(
@@ -107,57 +107,54 @@ class _MapViewState extends State<MapView> {
             },
           )),
           Align(
-            alignment: Alignment.bottomCenter,
-            child: Card(
-                child: SizedBox(
-              width: w * .9,
-              height: h * .12,
-              child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                  child: FutureBuilder<List<UserProfile>>(
-                    future: _future,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting)
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      if (snapshot.hasError) {
-                        print(snapshot.error);
-                        return ErrorView();
-                      }
-                      return Row(
-                        children: [
-                          Expanded(
-                              child: ListView.builder(
-                                  itemCount: snapshot.data!.length,
-                                  itemBuilder: (context, i) {
-                                    final item = snapshot.data![i];
+              alignment: Alignment.bottomCenter,
+              child: FutureBuilder<List<UserProfile>>(
+                future: _future,
+                builder: (context, snapshot) {
+                  final addButton = GestureDetector(
+                      onTap: () => Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => MemberAdd())),
+                      child: CircleAvatar(
+                        radius: h * .10 * .35,
+                        child: Icon(Icons.add),
+                      ));
+                  if (snapshot.connectionState == ConnectionState.waiting)
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  if (snapshot.hasError) {
+                    print(snapshot.error);
+                    return ErrorView();
+                  }
+                  if (snapshot.data!.isEmpty) return addButton;
+                  return Card(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      child: SizedBox(
+                          width: w * .9,
+                          height: h * .10,
+                          child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 5),
+                              child: Row(children: [
+                                Expanded(
+                                    child: ListView.builder(
+                                        itemCount: snapshot.data!.length,
+                                        itemBuilder: (context, i) {
+                                          final item = snapshot.data![i];
 
-                                    return ProfileImage(
-                                        size: h * .12 * .35,
-                                        userProfile: item,
-                                        onTap: () => _onTapUserProfile(item));
-                                  })),
-                          GestureDetector(
-                              onTap: () {
-                                LocationService.stopTracking();
-                              },
-                              // onTap: () => Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //         builder: (_) => MemberAdd())),
-                              child: CircleAvatar(
-                                radius: h * .12 * .35,
-                                child: Icon(Icons.add),
-                              ))
-                        ],
-                      );
-                    },
-                  )),
-            )),
-          ),
+                                          return ProfileImage(
+                                              size: h * .10 * .35,
+                                              userProfile: item,
+                                              onTap: () =>
+                                                  _onTapUserProfile(item));
+                                        })),
+                                addButton
+                              ]))));
+                },
+              )),
         ],
-      ),
+      )),
     );
   }
 }
