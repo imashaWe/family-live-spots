@@ -10,7 +10,7 @@ import 'package:family_live_spots/utility/functions.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
+import 'package:cached_network_marker/cached_network_marker.dart';
 import 'package:flutter_background_geolocation/flutter_background_geolocation.dart'
     as bg;
 
@@ -35,19 +35,26 @@ class _MapViewState extends State<MapView> {
 
   void _onMemberLocationListener(List<UserProfile> user) {
     _markers.clear();
-    user.forEach((u) {
+    user.forEach((u) async {
       if (u.lastLocation != null) {
+        final generator = CachedNetworkMarker(
+          url: u.photoURL ?? ENV.DEFAULT_PHOTO_URL,
+          dpr: MediaQuery.of(context).devicePixelRatio,
+        );
+
+        // generate bitmap
+        final bitmap = await generator.circleAvatar(
+            CircleAvatarParams(color: parseColorFromName(u.name)));
+
         setState(() => _markers.add(Marker(
-              // This marker id can be anything that uniquely identifies each marker.
-              markerId: MarkerId(u.id),
-              position: u.lastLocation!.latLng,
-              infoWindow: InfoWindow(
-                title: u.name,
-                snippet: 'Last update ',
-              ),
-              icon: BitmapDescriptor.defaultMarkerWithHue(
-                  BitmapDescriptor.hueRose),
-            )));
+            // This marker id can be anything that uniquely identifies each marker.
+            markerId: MarkerId(u.id),
+            position: u.lastLocation!.latLng,
+            infoWindow: InfoWindow(
+              title: u.name,
+              snippet: 'Last update ',
+            ),
+            icon: BitmapDescriptor.fromBytes(bitmap))));
       }
     });
   }

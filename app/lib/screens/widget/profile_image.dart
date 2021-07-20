@@ -1,3 +1,4 @@
+import 'package:family_live_spots/utility/functions.dart';
 import 'package:flutter/material.dart';
 import '../../models/user_profile.dart';
 
@@ -5,18 +6,7 @@ class ProfileImage extends StatelessWidget {
   final UserProfile? userProfile;
   final Function? onTap;
   final double size;
-  final List<Color> _letterColors = [
-    Colors.redAccent,
-    Colors.blueAccent,
-    Colors.limeAccent,
-    Colors.pinkAccent,
-    Colors.tealAccent,
-    Colors.greenAccent,
-    Colors.indigoAccent,
-    Colors.orangeAccent,
-    Colors.purpleAccent,
-    Colors.yellowAccent
-  ];
+
   ProfileImage({this.userProfile, this.size = 20, this.onTap});
 
   @override
@@ -36,7 +26,7 @@ class ProfileImage extends StatelessWidget {
           onTap: () => onTap!(),
           child: userProfile!.photoURL == null
               ? CircleAvatar(
-                  backgroundColor: _letterColors[l.codeUnitAt(0) % 10],
+                  backgroundColor: parseColorFromName(userProfile!.name),
                   foregroundColor: Colors.black,
                   radius: size,
                   child: Text(
@@ -46,7 +36,7 @@ class ProfileImage extends StatelessWidget {
                   ))
               : CircleAvatar(
                   radius: size,
-                  backgroundColor: _letterColors[l.codeUnitAt(0) % 10],
+                  backgroundColor: parseColorFromName(userProfile!.name),
                   child: CircleAvatar(
                     radius: size - 5,
                     backgroundImage: NetworkImage(userProfile!.photoURL ?? ''),
