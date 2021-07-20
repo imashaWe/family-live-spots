@@ -81,7 +81,6 @@ class _MapViewState extends State<MapView> {
     AuthService.getProfile().then((u) =>
         MemberService.membersSnapshot(u.members.map((e) => e.uid).toList())
             .listen(_onMemberLocationListener));
-    LocationService.startTracking();
     super.initState();
   }
 
@@ -141,7 +140,7 @@ class _MapViewState extends State<MapView> {
                                   })),
                           GestureDetector(
                               onTap: () {
-                                Navigator.pushNamed(context, '/give-access');
+                                LocationService.stopTracking();
                               },
                               // onTap: () => Navigator.push(
                               //     context,

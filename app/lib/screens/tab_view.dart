@@ -1,3 +1,4 @@
+import 'package:family_live_spots/services/location_service.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -16,12 +17,21 @@ class TabView extends StatefulWidget {
 
 class _TabViewState extends State<TabView> {
   int _activeTab = 2;
+  void _initTracking() {
+    LocationService.state.then((s) {
+      print(s.enabled);
+      if (!s.enabled) {
+        Navigator.pushNamed(context, '/give-access');
+      }
+    });
+  }
 
   @override
   void initState() {
     setState(() {
       _activeTab = widget.activeTab;
     });
+    _initTracking();
     super.initState();
   }
 

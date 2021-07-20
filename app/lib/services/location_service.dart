@@ -30,7 +30,6 @@ class LocationService {
             locationsOrderDirection: "DESC",
             maxDaysToPersist: 14))
         .then((bg.State state) {
-      print('[ready] success: ${state}');
       if (!state.enabled) {
         ////
         // 3.  Start the plugin.
@@ -51,6 +50,9 @@ class LocationService {
       print(e);
     }
   }
+
+  static Future<bg.State> get state async =>
+      await bg.BackgroundGeolocation.state;
 
   static Future<List<UserLocation>> getUserLocationHistory() async {
     final r = await _firestore
