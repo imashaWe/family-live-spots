@@ -46,11 +46,10 @@ class _TabViewState extends State<TabView> {
         type: BottomNavigationBarType.fixed,
         items: [
           BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.peopleArrows), label: "Members"),
+              icon: Icon(FontAwesomeIcons.users), label: "Members"),
           BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.locationArrow), label: "Places"),
-          BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.map), label: "Map"),
+              icon: Icon(FontAwesomeIcons.building), label: "Places"),
+          BottomNavigationBarItem(icon: Icon(Icons.location_pin), label: "Map"),
           BottomNavigationBarItem(
               icon: Icon(FontAwesomeIcons.history), label: "History"),
           BottomNavigationBarItem(icon: Icon(Icons.settings), label: "Settings")
