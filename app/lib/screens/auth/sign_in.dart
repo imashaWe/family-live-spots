@@ -32,7 +32,7 @@ class _SignInState extends State<SignIn> {
               MaterialPageRoute(builder: (_) => EditProfileView()),
               (route) => false).catchError((e) {
             _formKey.currentState!.reset();
-            AlertMessage.snakbarError(key: _scaffoldKey, message: e.toString());
+            AlertMessage.snakbarError(key: _scaffoldKey, message: "Eroor");
           }).whenComplete(() => _setLoading(false)));
     }
   }

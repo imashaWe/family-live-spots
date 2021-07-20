@@ -140,10 +140,13 @@ class _MapViewState extends State<MapView> {
                                         onTap: () => _onTapUserProfile(item));
                                   })),
                           GestureDetector(
-                              onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => MemberAdd())),
+                              onTap: () {
+                                Navigator.pushNamed(context, '/give-access');
+                              },
+                              // onTap: () => Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //         builder: (_) => MemberAdd())),
                               child: CircleAvatar(
                                 radius: h * .12 * .35,
                                 child: Icon(Icons.add),

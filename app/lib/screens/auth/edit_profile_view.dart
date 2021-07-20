@@ -9,9 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EditProfileView extends StatefulWidget {
-  final UserProfile? profile;
-
-  EditProfileView({this.profile});
+  EditProfileView();
 
   @override
   _EditProfileViewState createState() => _EditProfileViewState();
@@ -20,17 +18,20 @@ class EditProfileView extends StatefulWidget {
 class _EditProfileViewState extends State<EditProfileView> {
   final GlobalKey<FormState> _frmKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
+  final TextEditingController _nameText = TextEditingController();
   final _picker = ImagePicker();
 
   PickedFile? _pickedFile;
   String? _name;
   bool _isLoading = false;
 
+  UserProfile? _profile;
+
   void _save() {
     _frmKey.currentState!.save();
     if (_frmKey.currentState!.validate()) {
       _setLoading(true);
-      if (widget.profile != null) {
+      if (_profile != null) {
         AuthService.updateteProfile(
                 name: _name!,
                 imagePath: _pickedFile == null ? null : _pickedFile!.path)
@@ -58,12 +59,22 @@ class _EditProfileViewState extends State<EditProfileView> {
   }
 
   void _setLoading(bool v) => setState(() => _isLoading = v);
+
+  @override
+  void initState() {
+    AuthService.getProfile()
+        .then((p) => setState(() {
+              _profile = p;
+              _nameText.text = p.name;
+            }))
+        .catchError((e) => print(e));
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final h = MediaQuery.of(context).size.height;
     final w = MediaQuery.of(context).size.width;
-
-    void _setPhoto() {}
 
     return Scaffold(
         key: _key,
@@ -142,7 +153,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                               ),
                             )),
                     child: _pickedFile == null
-                        ? ProfileImage(size: 40, userProfile: widget.profile)
+                        ? ProfileImage(size: 40, userProfile: _profile)
                         : CircleAvatar(
                             radius: 40,
                             backgroundImage: FileImage(File(_pickedFile!.path)),
@@ -155,9 +166,9 @@ class _EditProfileViewState extends State<EditProfileView> {
                         key: _frmKey,
                         child: SingleChildScrollView(
                           child: TextFormField(
+                            controller: _nameText,
                             decoration: InputDecoration(labelText: "Name"),
                             onSaved: (v) => _name = v,
-                            initialValue: widget.profile?.name,
                             validator: (v) {
                               if (v!.isEmpty) return "Name is required!";
                               return null;

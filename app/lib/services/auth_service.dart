@@ -20,12 +20,65 @@ class AuthService {
   static Future<void> signUp(
       {required String email, required String password}) async {
     try {
-      final r = await _firebaseAuth.createUserWithEmailAndPassword(
+      await _firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
-      return await _createNewUserDoc(r.user!.uid);
     } on FirebaseAuthException catch (e) {
       throw e;
     }
+  }
+
+  static Future<void> signIn(
+      {required String email, required String password}) async {
+    try {
+      await _firebaseAuth.signInWithEmailAndPassword(
+          email: email, password: password);
+      print('run');
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
+  static Future<void> googleSignUp() async {
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+
+    try {
+      final googleSignInAccount = await googleSignIn.signIn();
+      final GoogleSignInAuthentication googleSignInAuthentication =
+          await googleSignInAccount!.authentication;
+
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleSignInAuthentication.accessToken,
+        idToken: googleSignInAuthentication.idToken,
+      );
+      await _firebaseAuth.signInWithCredential(credential);
+    } catch (e) {
+      print(e);
+      throw 'Something went wrong!';
+    }
+  }
+
+  static Future<void> appleSignUp({List scopes = const []}) async {
+    // if (!await AppleSignIn.isAvailable())
+    //   throw "This device doesn't support Apple connect!";
+    // try {
+    //   final result = await AppleSignIn.performRequests(
+    //       [AppleIdRequest(requestedScopes: scopes)]);
+    //   final appleIdCredential = result.credential;
+    //   final oAuthProvider = OAuthProvider('apple.com');
+    //   final credential = oAuthProvider.credential(
+    //     idToken: String.fromCharCodes(appleIdCredential.identityToken),
+    //     accessToken: String.fromCharCodes(appleIdCredential.authorizationCode),
+    //   );
+    //   final r = await _firebaseAuth.signInWithCredential(credential);
+
+    //   if (r != null)
+    //     return await _createNewUserDoc(r.user!.uid);
+    //   else
+    throw "Something went wrong!";
+    // } catch (e) {
+    //   throw "Something went wrong!";
+    // }
   }
 
   static Future<void> forgotPassword({required String email}) async {
@@ -62,64 +115,28 @@ class AuthService {
     }
   }
 
-  static Future<bool> signIn(
-      {required String email, required String password}) async {
+  static Future<void> editName({required String newName}) async {
     try {
-      final r = await _firebaseAuth.signInWithEmailAndPassword(
-          email: email, password: password);
-      await _createNewUserDoc(r.user!.uid);
-      return r.user != null;
+      return await _firestore.collection('User').doc(user!.uid).update({
+        'name': newName,
+      });
     } on FirebaseAuthException catch (e) {
       throw e;
     }
   }
 
-  static Future<void> googleSignUp() async {
-    final GoogleSignIn googleSignIn = GoogleSignIn();
-
+  static Future<void> updateProfile(String path) async {
     try {
-      final googleSignInAccount = await googleSignIn.signIn();
-      final GoogleSignInAuthentication googleSignInAuthentication =
-          await googleSignInAccount!.authentication;
-
-      final AuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleSignInAuthentication.accessToken,
-        idToken: googleSignInAuthentication.idToken,
-      );
-
-      final UserCredential r =
-          await _firebaseAuth.signInWithCredential(credential);
-      if (r != null)
-        return await _createNewUserDoc(r.user!.uid);
-      else
-        throw "Something went wrong!";
+      File file = File(path);
+      final r =
+          await _firebaseStorage.ref('profile/${user!.uid}/').putFile(file);
+      final photoUrl = await r.ref.getDownloadURL();
+      final userDocs = _firestore.collection('User');
+      await userDocs.doc(user!.uid).update({'photoURL': photoUrl});
     } catch (e) {
       print(e);
-      throw 'Something went wrong!';
+      throw e;
     }
-  }
-
-  static Future<void> appleSignUp({List scopes = const []}) async {
-    // if (!await AppleSignIn.isAvailable())
-    //   throw "This device doesn't support Apple connect!";
-    // try {
-    //   final result = await AppleSignIn.performRequests(
-    //       [AppleIdRequest(requestedScopes: scopes)]);
-    //   final appleIdCredential = result.credential;
-    //   final oAuthProvider = OAuthProvider('apple.com');
-    //   final credential = oAuthProvider.credential(
-    //     idToken: String.fromCharCodes(appleIdCredential.identityToken),
-    //     accessToken: String.fromCharCodes(appleIdCredential.authorizationCode),
-    //   );
-    //   final r = await _firebaseAuth.signInWithCredential(credential);
-
-    //   if (r != null)
-    //     return await _createNewUserDoc(r.user!.uid);
-    //   else
-    throw "Something went wrong!";
-    // } catch (e) {
-    //   throw "Something went wrong!";
-    // }
   }
 
   static Future<void> createProfile(
@@ -137,7 +154,7 @@ class AuthService {
         'photoURL': user!.photoURL,
         'members': []
       });
-      if (imagePath != null) await _uploadPhoto(imagePath);
+      if (imagePath != null) await updateProfile(imagePath);
       return;
     } on FirebaseException catch (e) {
       throw e;
@@ -148,47 +165,17 @@ class AuthService {
       {required String name, String? imagePath}) async {
     try {
       await _firestore.collection('User').doc(user!.uid).update({'name': name});
-      if (imagePath != null) await _uploadPhoto(imagePath);
+      if (imagePath != null) await updateProfile(imagePath);
       return;
     } on FirebaseException catch (e) {
       throw e;
     }
   }
 
-  static Future<void> _uploadPhoto(String path) async {
-    try {
-      File file = File(path);
-      final r =
-          await _firebaseStorage.ref('profile/${user!.uid}/').putFile(file);
-      final photoUrl = await r.ref.getDownloadURL();
-      final userDocs = _firestore.collection('User');
-      await userDocs.doc(user!.uid).update({'photoURL': photoUrl});
-    } catch (e) {
-      print(e);
-      throw e;
-    }
-  }
-
-  static Future<void> _createNewUserDoc(String uid) async {
-    final oldUser = await _firestore.collection('User').doc(uid).get();
-
-    if (oldUser.exists) {
-      // return await _firestore.collection('User').doc(user!.uid).update({
-
-      // });
-    }
-
-    return await _firestore.collection('User').doc(uid).set({
-      'uid': uid,
-      'createdAt': DateTime.now(),
-      'members': [],
-      'email': user!.email
-    });
-  }
-
   static Future<UserProfile> getProfile() async {
     try {
       final r = await _firestore.collection('User').doc(user!.uid).get();
+      if (!r.exists) throw ("user-not-found");
       return UserProfile.fromJson(parseDataWithID(r));
     } catch (e) {
       throw e;

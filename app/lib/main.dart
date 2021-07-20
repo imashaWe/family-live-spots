@@ -6,6 +6,8 @@ import 'package:family_live_spots/services/auth_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'screens/tab_view.dart';
+import 'screens/onboarding/onboarding_view.dart';
+import 'screens/give_access_view.dart';
 import 'utility/constants.dart';
 
 void main() async {
@@ -23,7 +25,9 @@ class MyApp extends StatelessWidget {
       routes: {
         '/sign-in': (_) => SignIn(),
         '/sign-up': (_) => SignUp(),
+        '/onboarding': (_) => OnBoardingView(),
         '/home': (_) => TabView(),
+        '/give-access': (_) => GiveAccessView(),
         '/members': (_) => TabView(
               activeTab: 0,
             ),
@@ -51,7 +55,7 @@ class MyApp extends StatelessWidget {
               style: ButtonStyle(
                   backgroundColor:
                       MaterialStateProperty.all(Constans.primary_color)))),
-      home: AuthService.isLoggedIn ? TabView() : SignIn(),
+      home: AuthService.isLoggedIn ? TabView() : OnBoardingView(),
     );
   }
 }

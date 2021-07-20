@@ -1,4 +1,5 @@
 import 'package:family_live_spots/models/user_profile.dart';
+import 'package:family_live_spots/screens/auth/account/account.dart';
 import 'package:family_live_spots/screens/auth/auth_view.dart';
 import 'package:family_live_spots/screens/auth/edit_profile_view.dart';
 import 'package:family_live_spots/screens/widget/error_view.dart';
@@ -53,24 +54,23 @@ class _SettingsViewState extends State<SettingsView> {
                       child: CircularProgressIndicator(),
                     );
                   if (snapshot.hasError) {
-                    print(snapshot.error);
+                    if (snapshot.error == "user-not-found")
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (_) => EditProfileView()),
+                          (route) => false);
                     return ErrorView();
                   }
                   return ListTile(
-                    leading: ProfileImage(
-                      size: 40,
-                      userProfile: snapshot.data,
-                    ),
-                    title: Text(snapshot.data!.name),
-                    subtitle: Text(snapshot.data!.email),
-                    trailing: Icon(Icons.edit),
-                    onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => EditProfileView(
-                                  profile: snapshot.data,
-                                ))),
-                  );
+                      leading: ProfileImage(
+                        size: 40,
+                        userProfile: snapshot.data,
+                      ),
+                      title: Text(snapshot.data!.name),
+                      subtitle: Text(snapshot.data!.email),
+                      trailing: Icon(Icons.edit),
+                      onTap: () => Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => Account())));
                 }),
             SizedBox(
               height: 20,

@@ -1,0 +1,34 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/parser.dart';
+
+class GiveAccessView extends StatelessWidget {
+  const GiveAccessView({Key? key}) : super(key: key);
+  void _giveAccess() {}
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircleAvatar(
+              radius: 100,
+              child: SvgPicture.asset('assets/images/auth.svg'),
+            ),
+            SizedBox(
+              height: 40,
+            ),
+            SizedBox(
+              child:
+                  ElevatedButton(onPressed: _giveAccess, child: Text("Start")),
+            ),
+            Text('By start, I agree with \nterms of use and privacy policy.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 12, color: Colors.grey)),
+          ],
+        ),
+      ),
+    );
+  }
+}

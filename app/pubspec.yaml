@@ -41,6 +41,8 @@ dependencies:
   cached_network_marker: ^0.1.1
   timeago: ^3.1.0
   intl: ^0.17.0
+  introduction_screen: ^2.1.0
+  flutter_gifimage: ^1.0.1
   
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
