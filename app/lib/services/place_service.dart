@@ -73,4 +73,12 @@ class PlaceService {
       throw e;
     }
   }
+
+  static Future<List<Place>> getUserPlacess() async {
+    final r = await _firestore
+        .collection("Place")
+        .where('uid', isEqualTo: AuthService.user!.uid)
+        .get();
+    return r.docs.map((e) => Place.fromJson(parseDataWithID(e))).toList();
+  }
 }

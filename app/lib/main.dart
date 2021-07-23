@@ -1,3 +1,4 @@
+import 'package:family_live_spots/providers/user_provider.dart';
 import 'package:family_live_spots/screens/auth/auth_view.dart';
 import 'package:family_live_spots/screens/auth/edit_profile_view.dart';
 import 'package:family_live_spots/screens/auth/sign_in.dart';
@@ -11,6 +12,7 @@ import 'screens/onboarding/onboarding_view.dart';
 import 'screens/give_access_view.dart';
 import 'utility/constants.dart';
 
+import 'package:provider/provider.dart';
 import 'package:flutter_background_geolocation/flutter_background_geolocation.dart'
     as bg;
 
@@ -104,42 +106,44 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      routes: {
-        '/sign-in': (_) => SignIn(),
-        '/sign-up': (_) => SignUp(),
-        '/onboarding': (_) => OnBoardingView(),
-        '/home': (_) => TabView(),
-        '/give-access': (_) => GiveAccessView(),
-        '/members': (_) => TabView(
-              activeTab: 0,
-            ),
-        '/places': (_) => TabView(
-              activeTab: 1,
-            ),
-        '/map': (_) => TabView(
-              activeTab: 2,
-            ),
-        '/history': (_) => TabView(
-              activeTab: 3,
-            ),
-        '/settings': (_) => TabView(
-              activeTab: 4,
-            ),
-      },
-      theme: ThemeData(
-          primaryColor: Constans.primary_color,
-          appBarTheme: AppBarTheme(centerTitle: true),
-          textButtonTheme: TextButtonThemeData(
-              style: ButtonStyle(
-                  foregroundColor:
-                      MaterialStateProperty.all(Constans.primary_color))),
-          elevatedButtonTheme: ElevatedButtonThemeData(
-              style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all(Constans.primary_color)))),
-      home: AuthService.isLoggedIn ? TabView() : OnBoardingView(),
-    );
+    return ChangeNotifierProvider(
+        create: (_) => UserProvide(),
+        child: MaterialApp(
+          title: 'Flutter Demo',
+          routes: {
+            '/sign-in': (_) => SignIn(),
+            '/sign-up': (_) => SignUp(),
+            '/onboarding': (_) => OnBoardingView(),
+            '/home': (_) => TabView(),
+            '/give-access': (_) => GiveAccessView(),
+            '/members': (_) => TabView(
+                  activeTab: 0,
+                ),
+            '/places': (_) => TabView(
+                  activeTab: 1,
+                ),
+            '/map': (_) => TabView(
+                  activeTab: 2,
+                ),
+            '/history': (_) => TabView(
+                  activeTab: 3,
+                ),
+            '/settings': (_) => TabView(
+                  activeTab: 4,
+                ),
+          },
+          theme: ThemeData(
+              primaryColor: Constans.primary_color,
+              appBarTheme: AppBarTheme(centerTitle: true),
+              textButtonTheme: TextButtonThemeData(
+                  style: ButtonStyle(
+                      foregroundColor:
+                          MaterialStateProperty.all(Constans.primary_color))),
+              elevatedButtonTheme: ElevatedButtonThemeData(
+                  style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all(Constans.primary_color)))),
+          home: AuthService.isLoggedIn ? TabView() : OnBoardingView(),
+        ));
   }
 }

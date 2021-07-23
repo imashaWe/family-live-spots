@@ -5,6 +5,7 @@ import 'package:family_live_spots/screens/widget/profile_image.dart';
 import 'package:family_live_spots/services/auth_service.dart';
 import 'package:family_live_spots/services/location_service.dart';
 import 'package:family_live_spots/services/member_service.dart';
+import 'package:family_live_spots/services/place_service.dart';
 import 'package:family_live_spots/utility/env.dart';
 import 'package:family_live_spots/utility/functions.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cached_network_marker/cached_network_marker.dart';
 import 'package:flutter_background_geolocation/flutter_background_geolocation.dart'
     as bg;
+import 'package:timeago/timeago.dart' as timeago;
 
 class MapView extends StatefulWidget {
   MapView({Key? key}) : super(key: key);
@@ -26,36 +28,64 @@ class _MapViewState extends State<MapView> {
   Completer<GoogleMapController> _controller = Completer();
 
   Set<Marker> _markers = {};
+  Set<Circle> _circles = {};
 
   void _onTapUserProfile(UserProfile user) {
+    print(_markers.length);
     if (user.lastLocation != null) {
       _focusLocation(user.lastLocation!.latLng);
     }
   }
 
   void _onMemberLocationListener(List<UserProfile> user) {
-    _markers.clear();
     user.forEach((u) async {
       if (u.lastLocation != null) {
+        final makerID = MarkerId(u.id);
+
         final generator = CachedNetworkMarker(
           url: u.photoURL ?? ENV.DEFAULT_PHOTO_URL,
           dpr: MediaQuery.of(context).devicePixelRatio,
         );
 
-        // generate bitmap
         final bitmap = await generator.circleAvatar(
             CircleAvatarParams(color: parseColorFromName(u.name)));
 
-        setState(() => _markers.add(Marker(
-            // This marker id can be anything that uniquely identifies each marker.
-            markerId: MarkerId(u.id),
-            position: u.lastLocation!.latLng,
-            infoWindow: InfoWindow(
-              title: u.name,
-              snippet: 'Last update ',
-            ),
-            icon: BitmapDescriptor.fromBytes(bitmap))));
+        setState(() {
+          _markers.removeWhere((m) => m.markerId == makerID);
+          _markers.add(Marker(
+              markerId: makerID,
+              position: u.lastLocation!.latLng,
+              infoWindow: InfoWindow(
+                title: u.name,
+                snippet:
+                    'Last update ${timeago.format(u.lastLocation!.dateTime)}',
+              ),
+              icon: BitmapDescriptor.fromBytes(bitmap)));
+        });
       }
+    });
+  }
+
+  void _initUserLoaction() {
+    PlaceService.getUserPlacess().then((placess) {
+      placess.forEach((p) => setState(() {
+            BitmapDescriptor.fromAssetImage(
+                    ImageConfiguration(size: Size(68, 68)),
+                    'assets/images/makers/home.png')
+                .then((icon) => _markers.add((Marker(
+                    markerId: MarkerId(p.id),
+                    position: p.latLng,
+                    infoWindow: InfoWindow(
+                      title: p.name,
+                      snippet: p.address,
+                    ),
+                    icon: icon))));
+            _circles.add(Circle(
+                circleId: CircleId(p.id),
+                center: p.latLng,
+                radius: 5,
+                fillColor: Colors.red));
+          }));
     });
   }
 
@@ -76,6 +106,7 @@ class _MapViewState extends State<MapView> {
   @override
   void initState() {
     _initMyLocation();
+    _initUserLoaction();
     _future = MemberService.fetchAllMembers();
     AuthService.getProfile().then((u) =>
         MemberService.membersSnapshot(u.members.map((e) => e.uid).toList())
@@ -100,6 +131,7 @@ class _MapViewState extends State<MapView> {
             myLocationEnabled: true,
             zoomControlsEnabled: false,
             markers: _markers,
+            circles: _circles,
             mapType: MapType.normal,
             initialCameraPosition: ENV.INITIAL_LOCATION,
             onMapCreated: (GoogleMapController controller) {

@@ -152,6 +152,40 @@ class AuthService {
         'createdAt': DateTime.now(),
         'email': user!.email,
         'photoURL': user!.photoURL,
+        'places': [
+          {
+            'id': 0,
+            'title': 'home',
+            'name': 'home',
+            'address': null,
+            'location': null,
+            'iconPath': 'assets/makers/home.png'
+          },
+          {
+            'id': 1,
+            'title': 'school',
+            'name': 'school',
+            'address': null,
+            'location': null,
+            'iconPath': 'assets/makers/school.png'
+          },
+          {
+            'id': 2,
+            'title': 'office',
+            'name': 'office',
+            'address': null,
+            'location': null,
+            'iconPath': 'assets/makers/office.png'
+          },
+          {
+            'id': 3,
+            'title': 'other',
+            'name': null,
+            'address': null,
+            'location': null,
+            'iconPath': 'assets/makers/other.png'
+          },
+        ],
         'members': []
       });
       if (imagePath != null) await updateProfile(imagePath);
