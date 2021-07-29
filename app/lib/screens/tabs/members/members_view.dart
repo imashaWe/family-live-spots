@@ -17,6 +17,7 @@ class MembersView extends StatefulWidget {
 
 class _MembersViewState extends State<MembersView> {
   Future<List<UserProfile>>? _future;
+  bool _isSignIn = false;
 
   @override
   void initState() {
@@ -45,7 +46,7 @@ class _MembersViewState extends State<MembersView> {
                     if (snapshot.error == "not-logged-in") return DoLogin();
                     return ErrorView();
                   }
-
+                  _isSignIn = true;
                   return ListView.builder(
                       itemCount: snapshot.data!.length,
                       itemBuilder: (context, i) {
@@ -84,8 +85,11 @@ class _MembersViewState extends State<MembersView> {
         floatingActionButton: Visibility(
           visible: true,
           child: FloatingActionButton.extended(
-            onPressed: () => Navigator.push(
-                context, MaterialPageRoute(builder: (_) => MemberAdd())),
+            onPressed: () {
+              if (!_isSignIn) return;
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (_) => MemberAdd()));
+            },
             label: Text('Add'),
             icon: Icon(Icons.add),
           ),

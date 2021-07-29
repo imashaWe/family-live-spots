@@ -53,8 +53,12 @@ class LocationService {
     }
   }
 
-  static Future<bg.State> get state async =>
-      await bg.BackgroundGeolocation.state;
+  static Future<bg.ProviderChangeEvent> get state async =>
+      await bg.BackgroundGeolocation.providerState;
+
+  static Future requestPermisson() async {
+    await bg.BackgroundGeolocation.requestPermission();
+  }
 
   static Future<List<UserLocation>> getUserLocationHistory() async {
     final r = await _firestore

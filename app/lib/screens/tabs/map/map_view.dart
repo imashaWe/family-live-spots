@@ -188,7 +188,7 @@ class _MapViewState extends State<MapView> {
                                     text: 'SIGN IN!',
                                     recognizer: TapGestureRecognizer()
                                       ..onTap = () => Navigator.pushNamed(
-                                          context, '/subscription'),
+                                          context, '/give-access'),
                                     style: TextStyle(
                                         color: Theme.of(context).primaryColor,
                                         fontWeight: FontWeight.bold))

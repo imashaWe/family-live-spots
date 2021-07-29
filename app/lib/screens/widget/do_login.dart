@@ -20,8 +20,7 @@ class DoLogin extends StatelessWidget {
                 TextSpan(
                     text: 'SIGN IN!',
                     recognizer: TapGestureRecognizer()
-                      ..onTap =
-                          () => Navigator.pushNamed(context, '/subscription'),
+                      ..onTap = () => Navigator.pushNamed(context, '/auth'),
                     style: TextStyle(
                         color: Theme.of(context).primaryColor,
                         fontWeight: FontWeight.bold))
