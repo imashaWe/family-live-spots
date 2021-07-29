@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:family_live_spots/services/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'package:qrscan/qrscan.dart' as scanner;
+//import 'package:qrscan/qrscan.dart' as scanner;
 //import 'package:permission_handler/permission_handler.dart';
 
 class AddByQR extends StatefulWidget {
@@ -24,16 +24,16 @@ class _QrViewState extends State<AddByQR> {
   }
 
   void _makeMyCode() async {
-    // Generating QR-Code
-    _myqr = await scanner.generateBarCode(AuthService.user!.uid);
+    // // Generating QR-Code
+    // _myqr = await scanner.generateBarCode(AuthService.user!.uid);
     setState(() {});
   }
 
   void _scan() async {
-    if (!await _requestPermisson()) return;
-    String id = await scanner.scan();
-    if (id.isEmpty) return;
-    widget.onScan!(id);
+    //   if (!await _requestPermisson()) return;
+    //  // String id = await scanner.scan();
+    //   if (id.isEmpty) return;
+    //   widget.onScan!(id);
   }
 
   Future<bool> _requestPermisson() async {

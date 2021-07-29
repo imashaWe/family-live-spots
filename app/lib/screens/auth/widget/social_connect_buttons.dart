@@ -36,6 +36,16 @@ class _SocialConnectButtonsState extends State<SocialConnectButtons> {
         }).whenComplete(() => _setLoading(false)));
   }
 
+  void _signUpFacebook() {
+    _setLoading(true);
+    AuthService.facebookSignUp().then((value) => Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (_) => EditProfileView()),
+            (route) => false).catchError((e) {
+          widget.onError(e);
+        }).whenComplete(() => _setLoading(false)));
+  }
+
   void _setLoading(bool v) {
     widget.diable = v;
     widget.onChangeLoading(v);
@@ -46,7 +56,7 @@ class _SocialConnectButtonsState extends State<SocialConnectButtons> {
     final w = MediaQuery.of(context).size.width;
     return Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
       SizedBox(
-          width: w / 3,
+          width: w / 2.7,
           child: ElevatedButton(
               style: ButtonStyle(
                   shape: MaterialStateProperty.all(RoundedRectangleBorder(
@@ -66,23 +76,23 @@ class _SocialConnectButtonsState extends State<SocialConnectButtons> {
                     ],
                   )))),
       SizedBox(
-          width: w / 3,
+          width: w / 2.7,
           child: ElevatedButton(
               style: ButtonStyle(
                   shape: MaterialStateProperty.all(RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20))),
-                  backgroundColor: MaterialStateProperty.all(Colors.black)),
-              onPressed: () => widget.diable ? null : _signUpApple(),
+                  backgroundColor: MaterialStateProperty.all(Colors.blue)),
+              onPressed: () => widget.diable ? null : _signUpFacebook(),
               child: Padding(
                   padding: EdgeInsets.symmetric(vertical: 5),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(FontAwesomeIcons.apple),
+                      Icon(FontAwesomeIcons.facebook),
                       SizedBox(
                         width: 10,
                       ),
-                      Text("Apple")
+                      Text("Facebook")
                     ],
                   ))))
     ]);

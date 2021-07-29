@@ -24,29 +24,104 @@ class _GiveAccessViewState extends State<GiveAccessView> {
 
   @override
   Widget build(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
+    final h = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            CircleAvatar(
-              radius: 100,
-              child: SvgPicture.asset('assets/images/auth.svg'),
+            SizedBox(
+              height: 10,
+            ),
+            Align(
+              alignment: Alignment.topRight,
+              child: IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: Icon(Icons.close)),
+            ),
+            Text(
+              "Family Live Spots requires these\n permissions to work correclty",
+              style: Theme.of(context).textTheme.headline5,
             ),
             SizedBox(
-              height: 40,
+              height: h / 8,
+            ),
+            ListTile(
+                title: Text(
+                  "Location",
+                  style: TextStyle(color: Colors.blueGrey),
+                ),
+                subtitle: Text(
+                    "Required to share your location with members of your circle"),
+                trailing: Container(
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                      color: Colors.redAccent,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Text(
+                    "Enable",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                )),
+            ListTile(
+                title: Text(
+                  "Background location",
+                  style: TextStyle(color: Colors.blueGrey),
+                ),
+                subtitle: Text(
+                    "Family Live Spots collects location data even when the app is closed or not in to provide your location history to yo and to memebrs of your circle."),
+                trailing: Container(
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                      color: Colors.redAccent,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Text(
+                    "Enable",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                )),
+            ListTile(
+                title: Text(
+                  "Physical activity",
+                  style: TextStyle(color: Colors.blueGrey),
+                ),
+                subtitle: Text(
+                    "Required to provide more reliable location while improving battery life"),
+                trailing: Container(
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                      color: Colors.redAccent,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Text(
+                    "Enable",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                )),
+            SizedBox(
+              height: h / 6,
             ),
             _isLoading
                 ? Center(
                     child: CircularProgressIndicator(),
                   )
-                : SizedBox(
-                    child: ElevatedButton(
-                        onPressed: _requirestAccess, child: Text("Start")),
-                  ),
-            Text('By start, I agree with \nterms of use and privacy policy.',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12, color: Colors.grey)),
+                : ElevatedButton(
+                    style: ButtonStyle(
+                        padding: MaterialStateProperty.all(
+                            EdgeInsets.symmetric(horizontal: 40, vertical: 15)),
+                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30)))),
+                    onPressed: _requirestAccess,
+                    child: Text(
+                      "Sure, I'd like that",
+                      style: TextStyle(fontSize: 18),
+                    )),
+            TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(
+                  "Not now",
+                  style: TextStyle(fontSize: 16),
+                )),
           ],
         ),
       ),

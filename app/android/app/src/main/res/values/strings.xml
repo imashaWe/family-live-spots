@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">Family Live Spots</string>
+  <string name="facebook_app_id">356215675958300</string>
+  <string name="fb_login_protocol_scheme">fb356215675958300</string>
+</resources>

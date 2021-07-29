@@ -1,10 +1,11 @@
 import 'package:family_live_spots/models/user_profile.dart';
 import 'package:family_live_spots/screens/auth/account/account.dart';
-import 'package:family_live_spots/screens/auth/auth_view.dart';
+import 'package:family_live_spots/screens/auth/_auth_view.dart';
 import 'package:family_live_spots/screens/auth/edit_profile_view.dart';
 import 'package:family_live_spots/screens/widget/error_view.dart';
 import 'package:family_live_spots/screens/widget/profile_image.dart';
 import 'package:family_live_spots/services/auth_service.dart';
+import 'package:family_live_spots/services/place_service.dart';
 import 'package:flutter/material.dart';
 
 class SettingsView extends StatefulWidget {
@@ -25,7 +26,7 @@ class _SettingsViewState extends State<SettingsView> {
   void _logout() {
     AuthService.logout()
         .then((value) => Navigator.pushNamedAndRemoveUntil(
-            context, '/sign-in', (route) => false))
+            context, '/auth', (route) => false))
         .catchError((e) => print(e));
   }
 
@@ -54,11 +55,10 @@ class _SettingsViewState extends State<SettingsView> {
                       child: CircularProgressIndicator(),
                     );
                   if (snapshot.hasError) {
-                    if (snapshot.error == "user-not-found")
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (_) => EditProfileView()),
-                          (route) => false);
+                    if (snapshot.error == "not-logged-in")
+                      return SizedBox(
+                        height: 10,
+                      );
                     return ErrorView();
                   }
                   return ListTile(

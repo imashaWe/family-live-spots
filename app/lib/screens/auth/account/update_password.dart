@@ -78,7 +78,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                         TextFormField(
                           obscureText: true,
                           decoration: InputDecoration(
-                              labelText: "Confirm_new_password:"),
+                              labelText: "Confirm New Password:"),
                           validator: (v) {
                             if (v!.isEmpty) return 'Confirm new  is requaired';
                             if (v != _newPassword)

@@ -41,16 +41,20 @@ class MemberService {
   }
 
   static Future<List<UserProfile>> fetchAllMembers() async {
-    final user = await AuthService.getProfile();
-    if (user.members.isEmpty) return [];
+    try {
+      final user = await AuthService.getProfile();
+      if (user.members.isEmpty) return [];
 
-    final res = await _firestore
-        .collection('User')
-        .where('uid', whereIn: user.members.map((e) => e.uid).toList())
-        .get();
-    return res.docs
-        .map((e) => UserProfile.fromJson(parseDataWithID(e)))
-        .toList();
+      final res = await _firestore
+          .collection('User')
+          .where('uid', whereIn: user.members.map((e) => e.uid).toList())
+          .get();
+      return res.docs
+          .map((e) => UserProfile.fromJson(parseDataWithID(e)))
+          .toList();
+    } catch (e) {
+      throw e;
+    }
   }
 
   static Stream<List<UserProfile>> membersSnapshot(List<String> uids) {
@@ -61,5 +65,15 @@ class MemberService {
         .map((q) => q.docs
             .map((e) => UserProfile.fromJson(parseDataWithID(e)))
             .toList());
+  }
+
+  static Future<UserProfile> getMemberById(String uid) async {
+    try {
+      final r = await _firestore.collection('User').doc(uid).get();
+      if (!r.exists) throw ("user-not-found");
+      return UserProfile.fromJson(parseDataWithID(r));
+    } catch (e) {
+      throw e;
+    }
   }
 }

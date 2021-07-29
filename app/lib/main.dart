@@ -1,5 +1,5 @@
 import 'package:family_live_spots/providers/user_provider.dart';
-import 'package:family_live_spots/screens/auth/auth_view.dart';
+import 'package:family_live_spots/screens/auth/_auth_view.dart';
 import 'package:family_live_spots/screens/auth/edit_profile_view.dart';
 import 'package:family_live_spots/screens/auth/sign_in.dart';
 import 'package:family_live_spots/screens/auth/sign_up.dart';
@@ -10,7 +10,9 @@ import 'package:flutter/material.dart';
 import 'screens/tab_view.dart';
 import 'screens/onboarding/onboarding_view.dart';
 import 'screens/give_access_view.dart';
+import 'screens/auth/auth_view.dart';
 import 'utility/constants.dart';
+import 'screens/subscription/subscription_view.dart';
 
 import 'package:provider/provider.dart';
 import 'package:flutter_background_geolocation/flutter_background_geolocation.dart'
@@ -109,10 +111,12 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
         create: (_) => UserProvide(),
         child: MaterialApp(
-          title: 'Flutter Demo',
+          title: 'Family Live Spots',
           routes: {
+            '/auth': (_) => AuthView(),
             '/sign-in': (_) => SignIn(),
             '/sign-up': (_) => SignUp(),
+            '/subscription': (_) => SubscriptionView(),
             '/onboarding': (_) => OnBoardingView(),
             '/home': (_) => TabView(),
             '/give-access': (_) => GiveAccessView(),

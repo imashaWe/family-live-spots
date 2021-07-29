@@ -50,20 +50,25 @@ class _SignInState extends State<SignIn> {
         child: Column(
           children: [
             Align(
-                alignment: Alignment.topLeft,
-                child: RichText(
-                  text: TextSpan(
-                      text: 'Welcome,',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30),
+              alignment: Alignment.topRight,
+              child: TextButton(
+                onPressed: () => Navigator.pushNamedAndRemoveUntil(
+                    context, '/subscription', (route) => false),
+                child: SizedBox(
+                    width: w / 3.8,
+                    child: Row(
                       children: [
-                        TextSpan(
-                            text: '\nLogin to continue!',
-                            style: TextStyle(color: Colors.grey, fontSize: 20))
-                      ]),
-                )),
+                        Text("Skip for later"),
+                        Icon(Icons.arrow_right_alt)
+                      ],
+                    )),
+              ),
+            ),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text('Sign In,',
+                  style: Theme.of(context).textTheme.headline4),
+            ),
             _isLoading ? LinearProgressIndicator() : Divider(),
             Expanded(
               child: Container(
@@ -129,22 +134,6 @@ class _SignInState extends State<SignIn> {
                                 onPressed: _sumbit,
                                 text: "SIGN IN",
                               )),
-                          SizedBox(
-                            height: 30,
-                          ),
-                          Row(
-                            children: [
-                              Expanded(child: Divider()),
-                              Text('Or connect with'),
-                              Expanded(child: Divider()),
-                            ],
-                          ),
-                          SocialConnectButtons(
-                            diable: _isLoading,
-                            onChangeLoading: _setLoading,
-                            onError: (e) => AlertMessage.snakbarError(
-                                key: _scaffoldKey, message: e.toString()),
-                          ),
                         ],
                       ))),
             ),

@@ -1,8 +1,10 @@
 import 'package:family_live_spots/providers/user_provider.dart';
+import 'package:family_live_spots/services/auth_service.dart';
 import 'package:family_live_spots/services/location_service.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'auth/edit_profile_view.dart';
 import 'tabs/members/members_view.dart';
 import 'tabs/map/map_view.dart';
 import 'tabs/places/places_view.dart';
@@ -18,6 +20,7 @@ class TabView extends StatefulWidget {
 
 class _TabViewState extends State<TabView> {
   int _activeTab = 2;
+
   void _initTracking() {
     LocationService.state.then((s) {
       print(s.enabled);
@@ -32,6 +35,7 @@ class _TabViewState extends State<TabView> {
     setState(() {
       _activeTab = widget.activeTab;
     });
+
     _initTracking();
     super.initState();
   }

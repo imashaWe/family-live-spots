@@ -8,6 +8,7 @@ import 'package:family_live_spots/services/member_service.dart';
 import 'package:family_live_spots/services/place_service.dart';
 import 'package:family_live_spots/utility/env.dart';
 import 'package:family_live_spots/utility/functions.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -25,6 +26,8 @@ class MapView extends StatefulWidget {
 
 class _MapViewState extends State<MapView> {
   Future<List<UserProfile>>? _future;
+  StreamSubscription<List<UserProfile>>? _listener;
+
   Completer<GoogleMapController> _controller = Completer();
 
   Set<Marker> _markers = {};
@@ -67,25 +70,30 @@ class _MapViewState extends State<MapView> {
   }
 
   void _initUserLoaction() {
-    PlaceService.getUserPlacess().then((placess) {
-      placess.forEach((p) => setState(() {
-            BitmapDescriptor.fromAssetImage(
-                    ImageConfiguration(size: Size(68, 68)),
-                    'assets/images/makers/home.png')
-                .then((icon) => _markers.add((Marker(
-                    markerId: MarkerId(p.id),
-                    position: p.latLng,
-                    infoWindow: InfoWindow(
-                      title: p.name,
-                      snippet: p.address,
-                    ),
-                    icon: icon))));
-            _circles.add(Circle(
-                circleId: CircleId(p.id),
-                center: p.latLng,
-                radius: 5,
-                fillColor: Colors.red));
-          }));
+    AuthService.getProfile()
+        .then((pro) => pro.places.forEach((p) {
+              if (p.location != null) {
+                setState(() {
+                  BitmapDescriptor.fromAssetImage(
+                          ImageConfiguration(size: Size(68, 68)), p.iconPath)
+                      .then((icon) => _markers.add((Marker(
+                          markerId: MarkerId(p.id.toString()),
+                          position: p.latLng,
+                          infoWindow: InfoWindow(
+                            title: p.name,
+                            snippet: p.address,
+                          ),
+                          icon: icon))));
+                  // _circles.add(Circle(
+                  //     circleId: CircleId(p.id.toString()),
+                  //     center: p.latLng,
+                  //     radius: 60,
+                  //     fillColor: Colors.red.withOpacity(.9)));
+                });
+              }
+            }))
+        .catchError((e) {
+      print(e);
     });
   }
 
@@ -105,13 +113,24 @@ class _MapViewState extends State<MapView> {
 
   @override
   void initState() {
+    if (!mounted) return;
     _initMyLocation();
     _initUserLoaction();
     _future = MemberService.fetchAllMembers();
-    AuthService.getProfile().then((u) =>
-        MemberService.membersSnapshot(u.members.map((e) => e.uid).toList())
-            .listen(_onMemberLocationListener));
+    AuthService.getProfile().then((u) {
+      if (u.members.isNotEmpty) {
+        _listener =
+            MemberService.membersSnapshot(u.members.map((e) => e.uid).toList())
+                .listen(_onMemberLocationListener);
+      }
+    });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _listener?.cancel();
+    super.dispose();
   }
 
   @override
@@ -155,7 +174,27 @@ class _MapViewState extends State<MapView> {
                       child: CircularProgressIndicator(),
                     );
                   if (snapshot.hasError) {
-                    print(snapshot.error);
+                    if (snapshot.error == "not-logged-in")
+                      return Card(
+                        child: ListTile(
+                          leading: Icon(Icons.warning),
+                          title: RichText(
+                              text: TextSpan(
+                                  text: "Please,",
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 16),
+                                  children: [
+                                TextSpan(
+                                    text: 'SIGN IN!',
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () => Navigator.pushNamed(
+                                          context, '/subscription'),
+                                    style: TextStyle(
+                                        color: Theme.of(context).primaryColor,
+                                        fontWeight: FontWeight.bold))
+                              ])),
+                        ),
+                      );
                     return ErrorView();
                   }
                   if (snapshot.data!.isEmpty) return addButton;
@@ -171,15 +210,19 @@ class _MapViewState extends State<MapView> {
                               child: Row(children: [
                                 Expanded(
                                     child: ListView.builder(
+                                        scrollDirection: Axis.horizontal,
                                         itemCount: snapshot.data!.length,
                                         itemBuilder: (context, i) {
                                           final item = snapshot.data![i];
 
-                                          return ProfileImage(
-                                              size: h * .10 * .35,
-                                              userProfile: item,
-                                              onTap: () =>
-                                                  _onTapUserProfile(item));
+                                          return Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 10),
+                                              child: ProfileImage(
+                                                  size: h * .10 * .35,
+                                                  userProfile: item,
+                                                  onTap: () =>
+                                                      _onTapUserProfile(item)));
                                         })),
                                 addButton
                               ]))));

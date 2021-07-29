@@ -1,10 +1,13 @@
-import 'package:family_live_spots/screens/auth/edit_profile_view.dart';
-import 'package:family_live_spots/screens/auth/verify_otp_view.dart';
+import 'dart:ui';
+
 import 'package:family_live_spots/screens/widget/alert_message.dart';
+import 'package:family_live_spots/services/auth_service.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'send_otp_view.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import 'edit_profile_view.dart';
 
 class AuthView extends StatefulWidget {
   AuthView({Key? key}) : super(key: key);
@@ -14,111 +17,145 @@ class AuthView extends StatefulWidget {
 }
 
 class _AuthViewState extends State<AuthView> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
-  bool _isSendState = false;
   bool _isLoading = false;
-  String? _verificationId;
-  int? _resendToken;
-
-  void _onTapSendOTP(String phone) async {
-    if (phone.isEmpty) {
-      _setError('Invalid phone number');
-      return;
-    }
-    final PhoneVerificationCompleted verificationCompleted =
-        (PhoneAuthCredential phoneAuthCredential) {
-      _setProcessing(true);
-      _auth.signInWithCredential(phoneAuthCredential).then((u) async {
-        Navigator.pushAndRemoveUntil(
+  void _setLoading(bool v) => setState(() => _isLoading = v);
+  void _signWithGoogle() {
+    _setLoading(true);
+    AuthService.googleSignUp().then((value) => Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (_) => EditProfileView()),
-            (route) => false);
-      }).catchError((e) {
-        _setError(e.code);
-      }).whenComplete(() => _setProcessing(false));
-    };
-
-    final PhoneCodeSent codeSent = (String? verificationId, int? resendToken) {
-      _verificationId = verificationId;
-      _resendToken = resendToken;
-      _setProcessing(false);
-      setState(() {
-        _isSendState = true;
-      });
-    };
-
-    PhoneVerificationFailed phoneVerificationFailed =
-        (FirebaseAuthException e) {
-      _setError(e.code);
-      _setProcessing(false);
-    };
-
-    PhoneCodeAutoRetrievalTimeout autoRetrievalTimeout =
-        (String verificationId) {};
-
-    await _auth.verifyPhoneNumber(
-        phoneNumber: phone,
-        //phoneNumber: '+16505556789',
-        verificationCompleted: verificationCompleted,
-        verificationFailed: phoneVerificationFailed,
-        codeSent: codeSent,
-        codeAutoRetrievalTimeout: autoRetrievalTimeout);
+            (route) => false)
+        .catchError((e) => AlertMessage.snakbarError(
+            message: "Something went wrong", key: _key))
+        .whenComplete(() => _setLoading(false)));
   }
 
-  void _onTapVerifyOTP(String pin) {
-    if (pin.isEmpty) {
-      _setError('Invalid code');
-      return;
-    }
-    PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.credential(
-        verificationId: _verificationId!, smsCode: pin);
-    _auth.signInWithCredential(phoneAuthCredential).then((u) {
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (_) => EditProfileView()),
-          (route) => false);
-    }).catchError((e) {
-      _setError(e.code);
-    }).whenComplete(() => _setProcessing(false));
+  void _signWithFacebook() {
+    _setLoading(true);
+    AuthService.facebookSignUp().then((value) => Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (_) => EditProfileView()),
+            (route) => false)
+        .catchError((e) => AlertMessage.snakbarError(
+            message: "Something went wrong", key: _key))
+        .whenComplete(() => _setLoading(false)));
   }
 
-  void _setError(String e) => AlertMessage.snakbarError(message: e, key: _key);
-  void _setProcessing(bool v) => setState(() => _isLoading = v);
   @override
   Widget build(BuildContext context) {
     final h = MediaQuery.of(context).size.height;
+    final w = MediaQuery.of(context).size.width;
+    final border =
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(20));
     return Scaffold(
-      key: _key,
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text("Login"),
-      ),
       body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 15),
-        child: ListView(children: [
-          SizedBox(
-            height: h / 10,
-          ),
-          SizedBox(
-            height: h / 4,
-            child: SvgPicture.asset('assets/images/auth.svg'),
-          ),
-          SizedBox(
-              height: h / 2,
-              child: AnimatedSwitcher(
-                  duration: Duration(milliseconds: 500),
-                  child: _isSendState
-                      ? VerifyOTPView(
-                          isLoading: _isLoading,
-                          onResend: () {},
-                          onSubmit: _onTapVerifyOTP,
-                        )
-                      : SendOTPView(
-                          isLoading: _isLoading,
-                          onSubmit: _onTapSendOTP,
-                        )))
-        ]),
+        padding: EdgeInsets.all(10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Align(
+              alignment: Alignment.topRight,
+              child: TextButton(
+                onPressed: _isLoading
+                    ? null
+                    : () => Navigator.pushNamedAndRemoveUntil(
+                        context, '/subscription', (route) => false),
+                child: SizedBox(
+                    width: w / 3.8,
+                    child: Row(
+                      children: [
+                        Text("Skip for later"),
+                        Icon(Icons.arrow_right_alt)
+                      ],
+                    )),
+              ),
+            ),
+            _isLoading ? LinearProgressIndicator() : Divider(),
+            SizedBox(
+              height: h / 4,
+              child: SvgPicture.asset('assets/images/auth.svg'),
+            ),
+            SizedBox(
+              height: h / 10,
+            ),
+            Text(
+              "Continue with",
+              style: Theme.of(context).textTheme.headline4,
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                    style: ButtonStyle(
+                        padding: MaterialStateProperty.all(
+                            EdgeInsets.symmetric(vertical: 10)),
+                        backgroundColor: MaterialStateProperty.all(Colors.red),
+                        shape: MaterialStateProperty.all(border)),
+                    onPressed: _isLoading ? null : _signWithGoogle,
+                    icon: Icon(FontAwesomeIcons.google),
+                    label: Text("GOOGLE"))),
+            SizedBox(
+              height: 20,
+            ),
+            SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                    style: ButtonStyle(
+                        padding: MaterialStateProperty.all(
+                            EdgeInsets.symmetric(vertical: 10)),
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.blueAccent),
+                        shape: MaterialStateProperty.all(border)),
+                    onPressed: _isLoading ? null : _signWithFacebook,
+                    icon: Icon(FontAwesomeIcons.facebook),
+                    label: Text("FACEBOOK"))),
+            SizedBox(
+              height: 20,
+            ),
+            SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                    style: ButtonStyle(
+                        padding: MaterialStateProperty.all(
+                            EdgeInsets.symmetric(vertical: 10)),
+                        shape: MaterialStateProperty.all(border)),
+                    onPressed: _isLoading
+                        ? null
+                        : () => Navigator.pushNamed(context, '/sign-in'),
+                    icon: Icon(FontAwesomeIcons.envelope),
+                    label: Text("EMAIL"))),
+            SizedBox(
+              height: h / 10,
+            ),
+            RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                    text: "By Creating an account I agree with\n",
+                    style: TextStyle(color: Colors.black, fontSize: 16),
+                    children: [
+                      TextSpan(
+                          text: 'Terms of use',
+                          recognizer: TapGestureRecognizer()
+                            ..onTap =
+                                () => Navigator.pushNamed(context, '/sign-up'),
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontWeight: FontWeight.bold)),
+                      TextSpan(text: ' and '),
+                      TextSpan(
+                          text: 'Privacy policy',
+                          recognizer: TapGestureRecognizer()
+                            ..onTap =
+                                () => Navigator.pushNamed(context, '/sign-up'),
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontWeight: FontWeight.bold))
+                    ])),
+          ],
+        ),
       ),
     );
   }

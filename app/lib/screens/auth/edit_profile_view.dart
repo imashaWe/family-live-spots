@@ -35,13 +35,8 @@ class _EditProfileViewState extends State<EditProfileView> {
         AuthService.updateteProfile(
                 name: _name!,
                 imagePath: _pickedFile == null ? null : _pickedFile!.path)
-            .then((value) => Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                    builder: (_) => TabView(
-                          activeTab: 4,
-                        )),
-                (route) => false))
+            .then((value) => Navigator.pushNamedAndRemoveUntil(
+                context, '/subscription', (route) => false))
             .catchError((e) =>
                 AlertMessage.snakbarError(message: e.toString(), key: _key))
             .whenComplete(() => _setLoading(false));
@@ -49,8 +44,8 @@ class _EditProfileViewState extends State<EditProfileView> {
         AuthService.createProfile(
                 name: _name!,
                 imagePath: _pickedFile == null ? null : _pickedFile!.path)
-            .then((value) => Navigator.pushAndRemoveUntil(context,
-                MaterialPageRoute(builder: (_) => TabView()), (route) => false))
+            .then((value) => Navigator.pushNamedAndRemoveUntil(
+                context, '/subscription', (route) => false))
             .catchError((e) =>
                 AlertMessage.snakbarError(message: e.toString(), key: _key))
             .whenComplete(() => _setLoading(false));

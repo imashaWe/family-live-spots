@@ -2,11 +2,13 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:family_live_spots/models/user_profile.dart';
+import 'package:family_live_spots/utility/constants.dart';
 import 'package:family_live_spots/utility/functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 //import 'package:apple_sign_in/apple_sign_in.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 class AuthService {
   static final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -52,6 +54,27 @@ class AuthService {
         idToken: googleSignInAuthentication.idToken,
       );
       await _firebaseAuth.signInWithCredential(credential);
+    } catch (e) {
+      print(e);
+      throw 'Something went wrong!';
+    }
+  }
+
+  static Future facebookSignUp() async {
+    try {
+      final LoginResult result = await FacebookAuth.instance
+          .login(); // by default we request the email and the public profile
+      // or FacebookAuth.i.login()
+      if (result.status == LoginStatus.success) {
+        // you are logged
+        final AccessToken accessToken = result.accessToken!;
+        final AuthCredential facebookCredential =
+            FacebookAuthProvider.credential(result.accessToken!.token);
+
+        await _firebaseAuth.signInWithCredential(facebookCredential);
+      } else {
+        throw 'Something went wrong!';
+      }
     } catch (e) {
       print(e);
       throw 'Something went wrong!';
@@ -152,40 +175,7 @@ class AuthService {
         'createdAt': DateTime.now(),
         'email': user!.email,
         'photoURL': user!.photoURL,
-        'places': [
-          {
-            'id': 0,
-            'title': 'home',
-            'name': 'home',
-            'address': null,
-            'location': null,
-            'iconPath': 'assets/makers/home.png'
-          },
-          {
-            'id': 1,
-            'title': 'school',
-            'name': 'school',
-            'address': null,
-            'location': null,
-            'iconPath': 'assets/makers/school.png'
-          },
-          {
-            'id': 2,
-            'title': 'office',
-            'name': 'office',
-            'address': null,
-            'location': null,
-            'iconPath': 'assets/makers/office.png'
-          },
-          {
-            'id': 3,
-            'title': 'other',
-            'name': null,
-            'address': null,
-            'location': null,
-            'iconPath': 'assets/makers/other.png'
-          },
-        ],
+        'places': Constans.USER_LOCATIONS,
         'members': []
       });
       if (imagePath != null) await updateProfile(imagePath);
@@ -208,6 +198,7 @@ class AuthService {
 
   static Future<UserProfile> getProfile() async {
     try {
+      if (user == null) throw ("not-logged-in");
       final r = await _firestore.collection('User').doc(user!.uid).get();
       if (!r.exists) throw ("user-not-found");
       return UserProfile.fromJson(parseDataWithID(r));

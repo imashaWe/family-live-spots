@@ -1,7 +1,10 @@
 import 'package:family_live_spots/models/user_profile.dart';
+import 'package:family_live_spots/screens/tabs/history/user_history_view.dart';
+import 'package:family_live_spots/screens/widget/do_login.dart';
 import 'package:family_live_spots/screens/widget/error_view.dart';
-import 'package:family_live_spots/services/location_service.dart';
+import 'package:family_live_spots/services/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class HistoryView extends StatefulWidget {
   HistoryView({Key? key}) : super(key: key);
@@ -11,21 +14,21 @@ class HistoryView extends StatefulWidget {
 }
 
 class _HistoryViewState extends State<HistoryView> {
-  Future<List<UserLocation>>? _future;
+  Future<UserProfile>? _future;
   @override
   void initState() {
-    _future = LocationService.getUserLocationHistory();
+    _future = AuthService.getProfile();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("History"),
-      ),
-      body: Container(
-          child: FutureBuilder<List<UserLocation>>(
+        appBar: AppBar(
+          title: Text("History"),
+        ),
+        body: Container(
+          child: FutureBuilder<UserProfile>(
               future: _future,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting)
@@ -33,18 +36,18 @@ class _HistoryViewState extends State<HistoryView> {
                     child: CircularProgressIndicator(),
                   );
                 if (snapshot.hasError) {
-                  print(snapshot.error);
+                  if (snapshot.error == "not-logged-in") return DoLogin();
                   return ErrorView();
                 }
-                return ListView.builder(
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (context, i) {
-                      final item = snapshot.data![i];
-                      return ListTile(
-                        title: Text(item.dateTime.toString()),
-                      );
-                    });
-              })),
-    );
+                return CarouselSlider(
+                  options: CarouselOptions(
+                      enableInfiniteScroll: false,
+                      height: MediaQuery.of(context).size.height),
+                  items: snapshot.data!.members
+                      .map((e) => UserHistoryView(e.uid))
+                      .toList(),
+                );
+              }),
+        ));
   }
 }

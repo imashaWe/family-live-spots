@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:family_live_spots/models/place.dart';
 import 'package:family_live_spots/screens/tabs/places/place_search.dart';
 import 'package:family_live_spots/screens/widget/alert_message.dart';
 import 'package:family_live_spots/services/place_service.dart';
@@ -11,8 +12,8 @@ import 'package:flutter_background_geolocation/flutter_background_geolocation.da
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class PlaceAdd extends StatefulWidget {
-  final String? name;
-  PlaceAdd({Key? key, this.name}) : super(key: key);
+  final Place place;
+  PlaceAdd(this.place);
 
   @override
   _PlaceAddState createState() => _PlaceAddState();
@@ -27,7 +28,6 @@ class _PlaceAddState extends State<PlaceAdd> {
 
   Set<Marker> _markers = {};
   Completer<GoogleMapController> _controller = Completer();
-  String? _id;
   String? _name;
   String? _address;
 
@@ -58,30 +58,20 @@ class _PlaceAddState extends State<PlaceAdd> {
         return;
       }
       _setLoading(true);
-      if (_id == null) {
-        PlaceService.addNewPlace(
-                name: _name!,
-                address: _address!,
-                location: parseGeoPoint(_markers.first.position),
-                isOtherPlace: _name == null)
-            .then((value) => Navigator.pushNamedAndRemoveUntil(
-                context, '/places', (route) => false))
-            .whenComplete(() => _setLoading(false))
-            .catchError((e) =>
-                AlertMessage.snakbarError(message: e.toString(), key: _key));
-      } else {
-        PlaceService.updatePlace(
-          id: _id!,
-          name: _name!,
-          address: _address!,
-          location: parseGeoPoint(_markers.first.position),
-        )
-            .then((value) => Navigator.pushNamedAndRemoveUntil(
-                context, '/places', (route) => false))
-            .whenComplete(() => _setLoading(false))
-            .catchError((e) =>
-                AlertMessage.snakbarError(message: e.toString(), key: _key));
-      }
+
+      PlaceService.setPlace(
+        id: widget.place.id,
+        name: _name,
+        address: _address!,
+        location: parseGeoPoint(_markers.first.position),
+      )
+          .then((value) => Navigator.pushNamedAndRemoveUntil(
+              context, '/places', (route) => false))
+          .whenComplete(() => _setLoading(false))
+          .catchError((e) {
+        print(e);
+        AlertMessage.snakbarError(message: e.toString(), key: _key);
+      });
     }
   }
 
@@ -96,7 +86,6 @@ class _PlaceAddState extends State<PlaceAdd> {
 
   void _findMyLocation() {
     bg.BackgroundGeolocation.getCurrentPosition().then((l) {
-      l.timestamp;
       final loc = LatLng(l.coords.latitude, l.coords.longitude);
       _focusLocation(loc);
       _onTapLocation(loc);
@@ -107,19 +96,15 @@ class _PlaceAddState extends State<PlaceAdd> {
 
   @override
   void initState() {
-    if (widget.name != null) _name = widget.name;
     super.initState();
 
-    PlaceService.getPlaceByName(name: widget.name).then((r) {
-      setState(() {
-        _id = r.id;
-        _addressText.text = r.address;
-        _nameText.text = r.name;
-        _focusLocation(parseLatLng(r.location));
-        _onTapLocation(parseLatLng(r.location));
-      });
-    }).catchError((e) {
-      print(e);
+    setState(() {
+      _addressText.text = widget.place.address ?? '';
+      _nameText.text = widget.place.name ?? '';
+      if (widget.place.location != null) {
+        _focusLocation(widget.place.latLng);
+        _onTapLocation(widget.place.latLng);
+      }
     });
   }
 
@@ -146,7 +131,7 @@ class _PlaceAddState extends State<PlaceAdd> {
     return Scaffold(
       key: _key,
       appBar: AppBar(
-        title: Text("Add ${widget.name ?? 'place'}"),
+        title: Text("Add ${widget.place.title}"),
       ),
       body: Container(
         padding: EdgeInsets.all(10),
@@ -158,7 +143,7 @@ class _PlaceAddState extends State<PlaceAdd> {
               child: ListView(
                 children: [
                   Visibility(
-                      visible: widget.name == null,
+                      visible: widget.place.title == "other",
                       child: TextFormField(
                         controller: _nameText,
                         onSaved: (v) => _name = v,

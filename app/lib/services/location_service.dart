@@ -29,12 +29,14 @@ class LocationService {
             params: {"uid": AuthService.user!.uid},
             locationsOrderDirection: "DESC",
             maxDaysToPersist: 14))
-        .then((bg.State state) {
+        .then((bg.State state) async {
       if (!state.enabled) {
         ////
         // 3.  Start the plugin.
         //
-        bg.BackgroundGeolocation.start();
+
+        await bg.BackgroundGeolocation.start();
+        await bg.BackgroundGeolocation.startBackgroundTask();
       }
     });
   }
@@ -58,6 +60,15 @@ class LocationService {
     final r = await _firestore
         .collection("Location")
         .where("uid", isEqualTo: AuthService.user!.uid)
+        .get();
+    return r.docs.map((e) => UserLocation.fromJson(e.data())).toList();
+  }
+
+  static Future<List<UserLocation>> getUserLocationHistoryByUid(
+      String uid) async {
+    final r = await _firestore
+        .collection("Location")
+        .where("uid", isEqualTo: uid)
         .get();
     return r.docs.map((e) => UserLocation.fromJson(e.data())).toList();
   }

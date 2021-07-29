@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:family_live_spots/models/place.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_background_geolocation/flutter_background_geolocation.dart'
     as bg;
@@ -9,6 +10,7 @@ class UserProfile {
   final String email;
   final String? photoURL;
   final List<Member> members;
+  final List<Place> places;
   final UserLocation? lastLocation;
 
   UserProfile({
@@ -16,6 +18,7 @@ class UserProfile {
     required this.name,
     required this.email,
     required this.members,
+    required this.places,
     this.lastLocation,
     this.photoURL,
   });
@@ -33,6 +36,8 @@ class UserProfile {
           ? []
           : List<Member>.from(
               json['members'].map((e) => Member.fromJson(e)).toList()),
+      places: List<Place>.from(
+          json['places'].map((e) => Place.fromJson(e)).toList()),
     );
   }
 
@@ -72,9 +77,9 @@ class UserLocation {
       required this.dateTime});
   factory UserLocation.fromJson(Map<String, dynamic> json) {
     return UserLocation(
-      accuracy: 0.0,
+      accuracy: json['coords']['accuracy'].toDouble(),
       geoPoint: json['coords']['geoPoint'],
-      speed: json['coords']['speed'],
+      speed: json['coords']['speed'].toDouble(),
       dateTime: json['datetime'].toDate(),
     );
   }
