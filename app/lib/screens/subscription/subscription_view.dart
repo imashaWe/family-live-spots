@@ -18,7 +18,7 @@ class _SubscriptionViewState extends State<SubscriptionView> {
           child: Column(
         children: [
           SizedBox(
-            height: h / 4,
+            height: h / 2.5,
             child: Stack(
               children: [
                 Positioned.fill(
@@ -26,7 +26,7 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                   decoration: BoxDecoration(
                       image: DecorationImage(
                           fit: BoxFit.cover,
-                          image: AssetImage("assets/images/intro.gif"))),
+                          image: NetworkImage(Constans.INTRO_URL))),
                   width: double.infinity,
                 )),
                 Align(
@@ -39,9 +39,6 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                 ),
               ],
             ),
-          ),
-          SizedBox(
-            height: h / 10,
           ),
           Text(
             'Know Where Your\n Family is',
