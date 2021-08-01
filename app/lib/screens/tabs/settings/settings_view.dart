@@ -6,7 +6,9 @@ import 'package:family_live_spots/screens/widget/error_view.dart';
 import 'package:family_live_spots/screens/widget/profile_image.dart';
 import 'package:family_live_spots/services/auth_service.dart';
 import 'package:family_live_spots/services/place_service.dart';
+import 'package:family_live_spots/utility/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsView extends StatefulWidget {
   SettingsView({Key? key}) : super(key: key);
@@ -30,6 +32,8 @@ class _SettingsViewState extends State<SettingsView> {
         .catchError((e) => print(e));
   }
 
+  void _launchURL(url) async =>
+      await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
   @override
   Widget build(BuildContext context) {
     Widget optionCard({required String option, required Function onTap}) =>
@@ -79,8 +83,12 @@ class _SettingsViewState extends State<SettingsView> {
                 child: ListView(
               children: [
                 optionCard(option: "Upgrade to premium", onTap: () => null),
-                optionCard(option: "Support", onTap: () => null),
-                optionCard(option: "Privacy policy", onTap: () => null),
+                optionCard(
+                    option: "Support",
+                    onTap: () => _launchURL(Constans.PRIVACY_POLICE_LINK)),
+                optionCard(
+                    option: "Privacy policy",
+                    onTap: () => _launchURL(Constans.PRIVACY_POLICE_LINK)),
                 optionCard(option: "Log out", onTap: _logout),
               ],
             ))

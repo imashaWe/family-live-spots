@@ -1,9 +1,6 @@
 import 'package:family_live_spots/utility/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:intro_slider/slide_object.dart';
-import 'package:introduction_screen/introduction_screen.dart';
-import 'package:intro_slider/intro_slider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import 'slider_view.dart';

@@ -9,8 +9,13 @@ class Constans {
     "2 month history",
     "Real time members location",
   ];
+
   static final INTRO_URL =
       "https://firebasestorage.googleapis.com/v0/b/filtersmusic-d259d.appspot.com/o/intro.gif?alt=media&token=bf558de7-22ee-44c4-89dc-2a71ed58e62d";
+  static final T_AND_C_LINK =
+      "https://sites.google.com/view/familylivespotsterms/home";
+  static final PRIVACY_POLICE_LINK =
+      "https://sites.google.com/view/family-live-spots/home";
   static final USER_LOCATIONS = [
     {
       'id': 0,

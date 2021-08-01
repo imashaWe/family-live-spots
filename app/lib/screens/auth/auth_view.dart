@@ -2,11 +2,12 @@ import 'dart:ui';
 
 import 'package:family_live_spots/screens/widget/alert_message.dart';
 import 'package:family_live_spots/services/auth_service.dart';
+import 'package:family_live_spots/utility/constants.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 import 'edit_profile_view.dart';
 
 class AuthView extends StatefulWidget {
@@ -42,6 +43,8 @@ class _AuthViewState extends State<AuthView> {
         .whenComplete(() => _setLoading(false)));
   }
 
+  void _launchURL(url) async =>
+      await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
   @override
   Widget build(BuildContext context) {
     final h = MediaQuery.of(context).size.height;
@@ -139,8 +142,7 @@ class _AuthViewState extends State<AuthView> {
                       TextSpan(
                           text: 'Terms of use',
                           recognizer: TapGestureRecognizer()
-                            ..onTap =
-                                () => Navigator.pushNamed(context, '/sign-up'),
+                            ..onTap = () => _launchURL(Constans.T_AND_C_LINK),
                           style: TextStyle(
                               color: Theme.of(context).primaryColor,
                               fontWeight: FontWeight.bold)),
@@ -149,7 +151,7 @@ class _AuthViewState extends State<AuthView> {
                           text: 'Privacy policy',
                           recognizer: TapGestureRecognizer()
                             ..onTap =
-                                () => Navigator.pushNamed(context, '/sign-up'),
+                                () => _launchURL(Constans.PRIVACY_POLICE_LINK),
                           style: TextStyle(
                               color: Theme.of(context).primaryColor,
                               fontWeight: FontWeight.bold))
