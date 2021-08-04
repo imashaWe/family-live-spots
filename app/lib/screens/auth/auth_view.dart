@@ -63,7 +63,7 @@ class _AuthViewState extends State<AuthView> {
                 onPressed: _isLoading
                     ? null
                     : () => Navigator.pushNamedAndRemoveUntil(
-                        context, '/subscription', (route) => false),
+                        context, '/home', (route) => false),
                 child: SizedBox(
                     width: w / 3.8,
                     child: Row(

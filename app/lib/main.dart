@@ -1,8 +1,7 @@
 import 'package:family_live_spots/providers/user_provider.dart';
-import 'package:family_live_spots/screens/auth/_auth_view.dart';
-import 'package:family_live_spots/screens/auth/edit_profile_view.dart';
 import 'package:family_live_spots/screens/auth/sign_in.dart';
 import 'package:family_live_spots/screens/auth/sign_up.dart';
+import 'package:family_live_spots/screens/verfiy_user.dart';
 import 'package:family_live_spots/services/auth_service.dart';
 import 'package:family_live_spots/utility/env.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -13,7 +12,9 @@ import 'screens/give_access_view.dart';
 import 'screens/auth/auth_view.dart';
 import 'utility/constants.dart';
 import 'screens/subscription/subscription_view.dart';
-
+import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:in_app_purchase_android/billing_client_wrappers.dart';
+import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_background_geolocation/flutter_background_geolocation.dart'
     as bg;
@@ -98,9 +99,12 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
+  InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
+
   // Register BackgroundGeolocation headless-task.
   bg.BackgroundGeolocation.registerHeadlessTask(
       backgroundGeolocationHeadlessTask);
+
   runApp(MyApp());
 }
 
@@ -147,7 +151,7 @@ class MyApp extends StatelessWidget {
                   style: ButtonStyle(
                       backgroundColor:
                           MaterialStateProperty.all(Constans.primary_color)))),
-          home: AuthService.isLoggedIn ? TabView() : OnBoardingView(),
+          home: AuthService.isLoggedIn ? VerifyUser() : OnBoardingView(),
         ));
   }
 }

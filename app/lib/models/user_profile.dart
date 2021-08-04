@@ -12,6 +12,7 @@ class UserProfile {
   final List<Member> members;
   final List<Place> places;
   final UserLocation? lastLocation;
+  final UserSubsription subsription;
 
   UserProfile({
     required this.id,
@@ -19,6 +20,7 @@ class UserProfile {
     required this.email,
     required this.members,
     required this.places,
+    required this.subsription,
     this.lastLocation,
     this.photoURL,
   });
@@ -29,6 +31,7 @@ class UserProfile {
       name: json['name'],
       email: json['email'],
       photoURL: json['photoURL'],
+      subsription: UserSubsription.fromJson(json['subscription']),
       lastLocation: json['lastLocation'] != null
           ? UserLocation.fromJson(json['lastLocation'])
           : null,
@@ -98,4 +101,29 @@ class UserLocation {
         'dateTime': dateTime
       };
   LatLng get latLng => LatLng(this.geoPoint.latitude, this.geoPoint.longitude);
+}
+
+class UserSubsription {
+  final bool isSubscribe;
+  final bool isUseFreeTrial;
+  final int maxMembers;
+  final int maxHistoryMonth;
+  final DateTime updatedAt;
+
+  UserSubsription(
+      {required this.isSubscribe,
+      required this.isUseFreeTrial,
+      required this.maxHistoryMonth,
+      required this.maxMembers,
+      required this.updatedAt});
+
+  factory UserSubsription.fromJson(Map<String, dynamic> json) {
+    return UserSubsription(
+      isSubscribe: json['isSubscribe'],
+      isUseFreeTrial: json['isUseFreeTrial'],
+      maxHistoryMonth: json['maxHistoryMonth'],
+      maxMembers: json['maxMembers'],
+      updatedAt: json['updatedAt'].toDate(),
+    );
+  }
 }

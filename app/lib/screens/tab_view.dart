@@ -3,6 +3,7 @@ import 'package:family_live_spots/services/auth_service.dart';
 import 'package:family_live_spots/services/location_service.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 
 import 'auth/edit_profile_view.dart';
 import 'tabs/members/members_view.dart';

@@ -164,20 +164,22 @@ class AuthService {
 
   static Future<void> createProfile(
       {required String name, String? imagePath}) async {
-    // final res = await _firestore.collection('User').doc(user!.uid).get();
-    // if (res.exists) {
-    //   res.reference.update({'name': name});
-    // }
     try {
-      await _firestore.collection('User').doc(user!.uid).set({
-        'name': name,
-        'uid': user!.uid,
-        'createdAt': DateTime.now(),
-        'email': user!.email,
-        'photoURL': user!.photoURL,
-        'places': Constans.USER_LOCATIONS,
-        'members': []
-      });
+      final res = await _firestore.collection('User').doc(user!.uid).get();
+      if (res.exists) {
+        res.reference.update({'name': name});
+      } else {
+        await _firestore.collection('User').doc(user!.uid).set({
+          'name': name,
+          'uid': user!.uid,
+          'createdAt': DateTime.now(),
+          'email': user!.email,
+          'photoURL': user!.photoURL,
+          'places': Constans.USER_LOCATIONS,
+          'members': [],
+          'subscription': Constans.subsription
+        });
+      }
       if (imagePath != null) await updateProfile(imagePath);
       return;
     } on FirebaseException catch (e) {

@@ -82,7 +82,9 @@ class _SettingsViewState extends State<SettingsView> {
             Expanded(
                 child: ListView(
               children: [
-                optionCard(option: "Upgrade to premium", onTap: () => null),
+                optionCard(
+                    option: "Upgrade to premium",
+                    onTap: () => Navigator.pushNamed(context, '/subscription')),
                 optionCard(
                     option: "Support",
                     onTap: () => _launchURL(Constans.PRIVACY_POLICE_LINK)),

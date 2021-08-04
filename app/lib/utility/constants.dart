@@ -50,4 +50,11 @@ class Constans {
       'iconPath': 'assets/makers/placeholder.png'
     },
   ];
+  static final subsription = {
+    'isSubscribe': false,
+    'isUseFreeTrial': false,
+    'updatedAt': DateTime.now(),
+    'maxMembers': 0,
+    'maxHistoryMonth': 0
+  };
 }
