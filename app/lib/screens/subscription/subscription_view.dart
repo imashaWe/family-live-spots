@@ -52,6 +52,7 @@ class _SubscriptionViewState extends State<SubscriptionView> {
     final w = MediaQuery.of(context).size.width;
     final h = MediaQuery.of(context).size.height;
     final userProfile = Provider.of<UserProvide>(context, listen: false);
+
     return Scaffold(
       body: Container(
           child: Column(
@@ -97,7 +98,7 @@ class _SubscriptionViewState extends State<SubscriptionView> {
               : Column(
                   children: [
                     Visibility(
-                        visible: !userProfile.profile!.subsription.isSubscribe,
+                        visible: userProfile.profile!.subsription.isSubscribe,
                         child: SizedBox(
                             width: w * .9,
                             child: OutlinedButton(

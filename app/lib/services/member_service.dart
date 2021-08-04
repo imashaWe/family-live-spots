@@ -6,7 +6,7 @@ import 'package:family_live_spots/utility/functions.dart';
 class MemberService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  static Future addMemberByEmail(String email, bool isParent) async {
+  static Future<dynamic> addMemberByEmail(String email, bool isParent) async {
     try {
       final r = await _firestore
           .collection('User')
@@ -19,7 +19,7 @@ class MemberService {
     }
   }
 
-  static Future addMember(String memberID, bool isParent) async {
+  static Future<dynamic> addMember(String memberID, bool isParent) async {
     try {
       await _addMember(AuthService.user!.uid, memberID, isParent);
       await _addMember(memberID, AuthService.user!.uid, !isParent);
@@ -28,11 +28,15 @@ class MemberService {
     }
   }
 
-  static Future _addMember(String uid, String memberID, bool isParent) async {
+  static Future<dynamic> _addMember(
+      String uid, String memberID, bool isParent) async {
     final user = _firestore.collection('User').doc(uid);
     return await _firestore.runTransaction((t) async {
       final userDoc = await user.get();
       List members = userDoc.data()!['members'] ?? [];
+      // final int maxMembers = userDoc.data()!['subscription']['maxMembers'];
+      // if (maxMembers - 1 <= members.length)
+      //   throw "The maximum number of members is exist";
       if (members.indexWhere((e) => e['uid'] == uid) != -1)
         throw "This member already added!";
       members.add({'uid': memberID, 'isParent': isParent});
