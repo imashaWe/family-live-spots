@@ -24,9 +24,10 @@ class _TabViewState extends State<TabView> {
 
   void _initTracking() {
     LocationService.state.then((s) {
-      print(s.enabled);
       if (!s.enabled) {
         Navigator.pushNamed(context, '/give-access');
+      } else {
+        LocationService.startTracking();
       }
     });
   }

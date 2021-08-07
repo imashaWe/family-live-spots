@@ -44,14 +44,21 @@ class MemberService {
     });
   }
 
-  static Future<List<UserProfile>> fetchAllMembers() async {
+  static Future<List<UserProfile>> fetchAllMembers(
+      {bool onlyChild = false}) async {
     try {
       final user = await AuthService.getProfile();
       if (user.members.isEmpty) return [];
-
+      List memberIDs = onlyChild
+          ? user.members
+              .where((e) => e.isParent == false)
+              .map((e) => e.uid)
+              .toList()
+          : user.members.map((e) => e.uid).toList();
+      if (memberIDs.isEmpty) return [];
       final res = await _firestore
           .collection('User')
-          .where('uid', whereIn: user.members.map((e) => e.uid).toList())
+          .where('uid', whereIn: memberIDs)
           .get();
       return res.docs
           .map((e) => UserProfile.fromJson(parseDataWithID(e)))

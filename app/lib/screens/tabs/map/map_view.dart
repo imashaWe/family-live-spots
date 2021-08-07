@@ -116,12 +116,15 @@ class _MapViewState extends State<MapView> {
     if (!mounted) return;
     _initMyLocation();
     _initUserLoaction();
-    _future = MemberService.fetchAllMembers();
+    _future = MemberService.fetchAllMembers(onlyChild: true);
     AuthService.getProfile().then((u) {
-      if (u.members.isNotEmpty) {
-        _listener =
-            MemberService.membersSnapshot(u.members.map((e) => e.uid).toList())
-                .listen(_onMemberLocationListener);
+      final members = u.members
+          .where((e) => e.isParent == false)
+          .map((e) => e.uid)
+          .toList();
+      if (members.isNotEmpty) {
+        _listener = MemberService.membersSnapshot(members)
+            .listen(_onMemberLocationListener);
       }
     });
     super.initState();
@@ -162,13 +165,6 @@ class _MapViewState extends State<MapView> {
               child: FutureBuilder<List<UserProfile>>(
                 future: _future,
                 builder: (context, snapshot) {
-                  final addButton = GestureDetector(
-                      onTap: () => Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => MemberAdd())),
-                      child: CircleAvatar(
-                        radius: h * .10 * .35,
-                        child: Icon(Icons.add),
-                      ));
                   if (snapshot.connectionState == ConnectionState.waiting)
                     return Center(
                       child: CircularProgressIndicator(),
@@ -197,7 +193,20 @@ class _MapViewState extends State<MapView> {
                       );
                     return ErrorView();
                   }
-                  if (snapshot.data!.isEmpty) return addButton;
+                  if (snapshot.data!.isEmpty)
+                    return SizedBox(
+                        width: w * .4,
+                        child: ElevatedButton(
+                            style: ButtonStyle(
+                                padding: MaterialStateProperty.all(
+                                    EdgeInsets.symmetric(vertical: 10)),
+                                shape: MaterialStateProperty.all(
+                                    RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30)))),
+                            onPressed: () => Navigator.push(context,
+                                MaterialPageRoute(builder: (_) => MemberAdd())),
+                            child: Text("Add Members")));
                   return Card(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)),
@@ -224,7 +233,15 @@ class _MapViewState extends State<MapView> {
                                                   onTap: () =>
                                                       _onTapUserProfile(item)));
                                         })),
-                                addButton
+                                GestureDetector(
+                                    onTap: () => Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) => MemberAdd())),
+                                    child: CircleAvatar(
+                                      radius: h * .10 * .35,
+                                      child: Icon(Icons.add),
+                                    ))
                               ]))));
                 },
               )),

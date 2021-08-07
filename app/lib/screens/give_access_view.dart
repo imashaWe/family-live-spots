@@ -1,11 +1,6 @@
 import 'package:family_live_spots/services/location_service.dart';
 import 'package:flutter/material.dart';
 
-import 'package:flutter_background_geolocation/flutter_background_geolocation.dart'
-    as bg;
-
-import 'widget/error_view.dart';
-
 class GiveAccessView extends StatefulWidget {
   GiveAccessView({Key? key}) : super(key: key);
 

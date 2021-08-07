@@ -18,6 +18,8 @@ class LocationService {
   }
 
   static Future<void> startTracking() async {
+    final r = await bg.BackgroundGeolocation.state;
+    if (r.enabled) return;
     await bg.BackgroundGeolocation.ready(bg.Config(
             url: ENV.LOCATION_API,
             autoSync: true,

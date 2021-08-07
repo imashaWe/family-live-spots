@@ -61,7 +61,7 @@ class MemberAdd extends StatelessWidget {
               onTap: () => showDialog(
                   context: context,
                   builder: (_) => AddByEmail(
-                        isParent: true,
+                        isParent: false,
                       ))),
           memberTypeCard(
               image: 'assets/images/parent.svg',
@@ -71,7 +71,7 @@ class MemberAdd extends StatelessWidget {
               onTap: () => showDialog(
                   context: context,
                   builder: (_) => AddByEmail(
-                        isParent: false,
+                        isParent: true,
                       ))),
           // memberTypeCard(
           //     image: 'assets/images/invite-code.svg',
