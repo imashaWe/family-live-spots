@@ -6,7 +6,7 @@ import 'package:family_live_spots/utility/functions.dart';
 class MemberService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  static Future<dynamic> addMemberByEmail(String email, bool isParent) async {
+  static Future<void> addMemberByEmail(String email, bool isParent) async {
     try {
       final r = await _firestore
           .collection('User')
@@ -19,24 +19,24 @@ class MemberService {
     }
   }
 
-  static Future<dynamic> addMember(String memberID, bool isParent) async {
-    try {
-      await _addMember(AuthService.user!.uid, memberID, isParent);
-      await _addMember(memberID, AuthService.user!.uid, !isParent);
-    } on FirebaseException catch (e) {
-      throw e;
-    }
+  static Future<void> addMember(String memberID, bool isParent) async {
+    await _addMember(AuthService.user!.uid, memberID, isParent, true);
+    await _addMember(memberID, AuthService.user!.uid, !isParent, false);
   }
 
-  static Future<dynamic> _addMember(
-      String uid, String memberID, bool isParent) async {
+  static Future _addMember(
+      String uid, String memberID, bool isParent, bool checkMax) async {
     final user = _firestore.collection('User').doc(uid);
-    return await _firestore.runTransaction((t) async {
+
+    await _firestore.runTransaction((t) async {
       final userDoc = await user.get();
       List members = userDoc.data()!['members'] ?? [];
-      // final int maxMembers = userDoc.data()!['subscription']['maxMembers'];
-      // if (maxMembers - 1 <= members.length)
-      //   throw "The maximum number of members is exist";
+      if (checkMax) {
+        final int maxMembers = userDoc.data()!['subscription']['maxMembers'];
+        if (maxMembers - 1 <= members.length)
+          throw "The maximum number of members is exist";
+      }
+
       if (members.indexWhere((e) => e['uid'] == uid) != -1)
         throw "This member already added!";
       members.add({'uid': memberID, 'isParent': isParent});

@@ -21,12 +21,6 @@ class UserProvide extends ChangeNotifier {
       notifyListeners();
     });
   }
-  void init() {
-    AuthService.getProfile().then((p) {
-      profile = p;
-      notifyListeners();
-    });
-  }
 
   @override
   void dispose() {
