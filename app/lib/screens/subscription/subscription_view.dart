@@ -66,7 +66,7 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                   decoration: BoxDecoration(
                       image: DecorationImage(
                           fit: BoxFit.cover,
-                          image: NetworkImage(Constans.INTRO_URL))),
+                          image: AssetImage('assets/images/intro.gif'))),
                   width: double.infinity,
                 )),
                 Align(
