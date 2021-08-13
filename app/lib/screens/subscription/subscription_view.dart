@@ -3,6 +3,7 @@ import 'package:family_live_spots/providers/user_provider.dart';
 import 'package:family_live_spots/screens/widget/alert_message.dart';
 import 'package:family_live_spots/services/subsription_service.dart';
 import 'package:family_live_spots/utility/constants.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -58,7 +59,7 @@ class _SubscriptionViewState extends State<SubscriptionView> {
           child: Column(
         children: [
           SizedBox(
-            height: h / 2.5,
+            height: h / 2.7,
             child: Stack(
               children: [
                 Positioned.fill(
@@ -97,49 +98,43 @@ class _SubscriptionViewState extends State<SubscriptionView> {
               ? CircularProgressIndicator()
               : Column(
                   children: [
-                    Visibility(
-                        visible: userProfile.profile!.subsription.isSubscribe,
-                        child: SizedBox(
-                            width: w * .9,
-                            child: OutlinedButton(
-                                style: ButtonStyle(
-                                    foregroundColor: MaterialStateProperty.all(
-                                        Constans.primary_color),
-                                    padding: MaterialStateProperty.all(
-                                        EdgeInsets.symmetric(vertical: 10)),
-                                    shape: MaterialStateProperty.all(
-                                        RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(30)))),
-                                onPressed: _restore,
-                                child: Text(
-                                  "Restore",
-                                  style: TextStyle(fontSize: 18),
-                                )))),
-                    Visibility(
-                        visible:
-                            !userProfile.profile!.subsription.isUseFreeTrial,
-                        child: SizedBox(
-                            width: w * .9,
-                            child: ElevatedButton(
-                                style: ButtonStyle(
-                                    padding: MaterialStateProperty.all(
-                                        EdgeInsets.symmetric(vertical: 10)),
-                                    shape: MaterialStateProperty.all(
-                                        RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(30)))),
-                                onPressed: _getFreetrail,
-                                child: Text(
-                                  "3 DAYS TRIAL",
-                                  style: TextStyle(fontSize: 18),
-                                )))),
+                    SizedBox(
+                        width: w * .9,
+                        child: ElevatedButton(
+                            style: ButtonStyle(
+                                padding: MaterialStateProperty.all(
+                                    EdgeInsets.symmetric(vertical: 10)),
+                                shape: MaterialStateProperty.all(
+                                    RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30)))),
+                            onPressed:
+                                userProfile.profile!.subsription.isUseFreeTrial
+                                    ? null
+                                    : _getFreetrail,
+                            child: Text(
+                              "3 DAYS TRIAL",
+                              style: TextStyle(fontSize: 18),
+                            ))),
                     TextButton(
                         onPressed: _tryLimitedVersion,
                         child: Text(
                           "Try Limited Version",
                           style: TextStyle(fontSize: 16),
                         )),
+                    RichText(
+                        text: TextSpan(
+                            text: "I have already subscribe,",
+                            style: TextStyle(color: Colors.black, fontSize: 16),
+                            children: [
+                          TextSpan(
+                              text: '\tRestore',
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () => _restore(),
+                              style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
+                                  fontWeight: FontWeight.bold))
+                        ])),
                   ],
                 )
         ],

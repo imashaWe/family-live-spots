@@ -33,6 +33,8 @@ class SubsriptionService {
   static Future<void> restore() async {
     try {
       _iap.restorePurchases(applicationUserName: AuthService.user!.uid);
+    } on InAppPurchaseException catch (e) {
+      throw e;
     } catch (e) {
       throw e;
     }
