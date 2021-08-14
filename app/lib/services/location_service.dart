@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:family_live_spots/models/user_profile.dart';
 import 'package:family_live_spots/services/auth_service.dart';
+import 'package:family_live_spots/utility/constants.dart';
 import 'package:family_live_spots/utility/env.dart';
 import 'package:flutter_background_geolocation/flutter_background_geolocation.dart'
     as bg;
@@ -20,30 +21,22 @@ class LocationService {
   static Future<void> startTracking() async {
     final r = await bg.BackgroundGeolocation.state;
     if (r.enabled) return;
-    await bg.BackgroundGeolocation.ready(bg.Config(
-            url: ENV.LOCATION_API,
-            autoSync: true,
-            autoSyncThreshold: 5,
-            batchSync: true,
-            maxBatchSize: 10,
-            distanceFilter: 10,
-            // headers: {"AUTHENTICATION_TOKEN": "23kasdlfkjlksjflkasdZIds"},
-            params: {"uid": AuthService.user!.uid},
-            locationsOrderDirection: "DESC",
-            maxDaysToPersist: 14))
+    await bg.BackgroundGeolocation.ready(ENV.BACKGROUD_LOCATION_CONFIG)
         .then((bg.State state) async {
       if (!state.enabled) {
         ////
         // 3.  Start the plugin.
         //
-
         await bg.BackgroundGeolocation.start();
         await bg.BackgroundGeolocation.startBackgroundTask();
+        print("Started location tracking....");
       }
     });
   }
 
   static Future stopTracking() async {
+    final r = await bg.BackgroundGeolocation.state;
+    if (!r.enabled) return;
     await bg.BackgroundGeolocation.stop();
   }
 
@@ -59,6 +52,15 @@ class LocationService {
       await bg.BackgroundGeolocation.providerState;
 
   static Future requestPermisson() async {
+    await bg.BackgroundGeolocation.setConfig(bg.Config(
+        locationAuthorizationRequest: 'Always',
+        backgroundPermissionRationale: bg.PermissionRationale(
+            title:
+                "Allow ${Constans.APP_NAME} to access this device's location even when closed or not in use.",
+            message:
+                "In order to track your activity in the background, please enable Always location permission",
+            positiveAction: "Change to Always",
+            negativeAction: "Cancel")));
     await bg.BackgroundGeolocation.requestPermission();
   }
 

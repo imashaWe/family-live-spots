@@ -25,12 +25,16 @@ class _SignInState extends State<SignIn> {
   void _sumbit() {
     _formKey.currentState!.save();
     if (_formKey.currentState!.validate()) {
-      _setLoading(true);
+      //  _setLoading(true);
       AuthService.signIn(email: _email!, password: _password!).then((v) =>
           Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (_) => EditProfileView()),
-              (route) => false).catchError((e) {
+                  context,
+                  MaterialPageRoute(builder: (_) => EditProfileView()),
+                  (route) => false)
+              .onError((error, stackTrace) => print('llllllllll'))
+              .catchError((e) {
+            print("Error occur ");
+            print(e);
             _formKey.currentState!.reset();
             AlertMessage.snakbarError(key: _scaffoldKey, message: "Eroor");
           }).whenComplete(() => _setLoading(false)));

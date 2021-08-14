@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Constans {
+  static final APP_NAME = "Family Live Spots";
   static final primary_color = Color(0xFFBE0C6F);
   static final INTRO_TEXT = "See your family's location on the map";
   static final TRAIL_PACKAGE_LIST = [

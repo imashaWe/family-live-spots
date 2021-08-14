@@ -29,17 +29,32 @@ class AuthService {
     }
   }
 
-  static Future<void> signIn(
+  static Future<bool> signIn(
       {required String email, required String password}) async {
     try {
-      await _firebaseAuth.signInWithEmailAndPassword(
+      final r = await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
-      print('run');
-    } catch (e) {
-      print(e);
-      throw e;
+
+      return r.user != null;
+    } on FirebaseAuthException catch (e) {
+      throw e.code;
     }
   }
+  // static Future<dynamic> signIn(
+  //     {required String email, required String password}) async {
+  //   try {
+  //     await _firebaseAuth.signInWithEmailAndPassword(
+  //         email: email, password: password);
+  //   } on FirebaseAuthException catch (e) {
+  //     print("Error1111");
+  //     print(e);
+  //     print("Errorfff");
+  //     throw e;
+  //   } catch (e) {
+  //     print("Error@@@@");
+  //     throw e;
+  //   }
+  // }
 
   static Future<void> googleSignUp() async {
     final GoogleSignIn googleSignIn = GoogleSignIn();
