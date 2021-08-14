@@ -106,15 +106,29 @@ class _MapViewState extends State<MapView> {
     controller.animateCamera(CameraUpdate.newCameraPosition(location));
   }
 
-  void _initMyLocation() {
-    bg.BackgroundGeolocation.getCurrentPosition()
-        .then((l) => _focusLocation(parseLatLngFromCoords(l.coords)));
+  void _onLocation(bg.Location location) {
+    _focusLocation(parseLatLngFromCoords(location.coords));
+  }
+
+  void _onLocationError(bg.LocationError error) {
+    print('[${bg.Event.LOCATION}] ERROR - $error');
+  }
+
+  void _initLocationServices() {
+    LocationService.state.then((s) {
+      if (!s.enabled) {
+        Navigator.pushNamed(context, '/give-access');
+      } else {
+        LocationService.startTracking();
+        LocationService.onLocationChange(_onLocation, _onLocationError);
+      }
+    });
   }
 
   @override
   void initState() {
     if (!mounted) return;
-    _initMyLocation();
+    _initLocationServices();
     _initUserLoaction();
     _future = MemberService.fetchAllMembers(onlyChild: true);
     AuthService.getProfile().then((u) {

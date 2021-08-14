@@ -8,6 +8,7 @@ import 'package:flutter_background_geolocation/flutter_background_geolocation.da
 
 class LocationService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   static Future syncMyCurrentLocation() async {
     try {
       final l = await bg.BackgroundGeolocation.getCurrentPosition();
@@ -71,6 +72,10 @@ class LocationService {
         .get();
     return r.docs.map((e) => UserLocation.fromJson(e.data())).toList();
   }
+
+  static void onLocationChange(dynamic Function(bg.Location) success,
+          [dynamic Function(bg.LocationError)? failure]) =>
+      bg.BackgroundGeolocation.onLocation(success, failure);
 
   static Future<List<UserLocation>> getUserLocationHistoryByUid(
       String uid) async {
