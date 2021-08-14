@@ -17,11 +17,16 @@ class UserProvide extends ChangeNotifier {
 
   UserProvide() {
     _userSubsription = _auth.authStateChanges().listen((user) {
-      _subscription =
-          _firestore.collection('User').doc(user!.uid).snapshots().listen((e) {
-        profile = UserProfile.fromJson(parseDataWithID(e));
-        notifyListeners();
-      });
+      if (user != null) {
+        _subscription =
+            _firestore.collection('User').doc(user.uid).snapshots().listen((e) {
+          profile = UserProfile.fromJson(parseDataWithID(e));
+        });
+      } else {
+        _subscription.cancel();
+        profile = null;
+      }
+      notifyListeners();
     });
   }
 
