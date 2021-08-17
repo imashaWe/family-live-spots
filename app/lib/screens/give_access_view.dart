@@ -1,3 +1,4 @@
+import 'package:family_live_spots/screens/widget/error_view.dart';
 import 'package:family_live_spots/services/location_service.dart';
 import 'package:flutter/material.dart';
 
@@ -10,12 +11,9 @@ class GiveAccessView extends StatefulWidget {
 
 class _GiveAccessViewState extends State<GiveAccessView> {
   bool _isLoading = false;
-  bool _isLocServiceEnable = true;
-  bool _isBackGrounServiceEnable = true;
-  bool _isPhysicalEnable = true;
 
   void _requirestAccess() {
-    LocationService.requestPermisson().then((value) =>
+    LocationService.permisson.requestPermisson().then((value) =>
         Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false));
   }
 
@@ -47,53 +45,51 @@ class _GiveAccessViewState extends State<GiveAccessView> {
             SizedBox(
               height: h / 8,
             ),
-            // FutureBuilder<bg.ProviderChangeEvent>(
-            //     future: LocationService.state,
-            //     builder: (context, snapshot) {
-            //       if (snapshot.connectionState == ConnectionState.waiting)
-            //         return Center(
-            //           child: CircularProgressIndicator(),
-            //         );
-            //       if (snapshot.hasError) {
-            //         return ErrorView();
-            //       }
-            //       return Column(
-            //         children: [
-
-            //         ],
-            //       );
-
-            // }),
-
-            SwitchListTile(
-                title: Text(
-                  "Location",
-                  style: TextStyle(color: Colors.blueGrey),
-                ),
-                subtitle: Text(
-                    "Required to share your location with members of your circle"),
-                value: _isLocServiceEnable,
-                onChanged: (v) => setState(() => _isLocServiceEnable = v)),
-            SwitchListTile(
-                title: Text(
-                  "Background location",
-                  style: TextStyle(color: Colors.blueGrey),
-                ),
-                subtitle: Text(
-                    "Family Live Spots collects location data even when the app is closed or not in to provide your location history to yo and to memebrs of your circle."),
-                value: _isBackGrounServiceEnable,
-                onChanged: (v) =>
-                    setState(() => _isBackGrounServiceEnable = v)),
-            SwitchListTile(
-                title: Text(
-                  "Physical activity",
-                  style: TextStyle(color: Colors.blueGrey),
-                ),
-                subtitle: Text(
-                    "Required to provide more reliable location while improving battery life"),
-                value: _isPhysicalEnable,
-                onChanged: (v) => setState(() => _isPhysicalEnable = v)),
-
+            StreamBuilder<LocationPermissons>(
+                stream: LocationService.permisson.LocationPermissionSnapshot(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting)
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  if (snapshot.hasError) {
+                    return ErrorView();
+                  }
+                  return Column(
+                    children: [
+                      // SwitchListTile(
+                      //     title: Text(
+                      //       "Location",
+                      //       style: TextStyle(color: Colors.blueGrey),
+                      //     ),
+                      //     subtitle: Text(
+                      //         "Required to share your location with members of your circle"),
+                      //     value: snapshot.data!.location,
+                      //     onChanged: (v) => LocationService.permisson
+                      //         .requestLocationPermission()),
+                      SwitchListTile(
+                          title: Text(
+                            "Background location",
+                            style: TextStyle(color: Colors.blueGrey),
+                          ),
+                          subtitle: Text(
+                              "Family Live Spots collects location data even when the app is closed or not in to provide your location history to yo and to memebrs of your circle."),
+                          value: snapshot.data!.background,
+                          onChanged: (v) => LocationService.permisson
+                              .requestBackGroudPermission()),
+                      SwitchListTile(
+                          title: Text(
+                            "Physical activity",
+                            style: TextStyle(color: Colors.blueGrey),
+                          ),
+                          subtitle: Text(
+                              "Required to provide more reliable location while improving battery life"),
+                          value: snapshot.data!.physicalActivity,
+                          onChanged: (v) => LocationService.permisson
+                              .requesPhsicalActivityPermission()),
+                    ],
+                  );
+                }),
             SizedBox(
               height: h / 6,
             ),
@@ -107,11 +103,7 @@ class _GiveAccessViewState extends State<GiveAccessView> {
                             EdgeInsets.symmetric(horizontal: 40, vertical: 15)),
                         shape: MaterialStateProperty.all(RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30)))),
-                    onPressed: _isBackGrounServiceEnable &
-                            _isPhysicalEnable &
-                            _isLocServiceEnable
-                        ? _requirestAccess
-                        : null,
+                    onPressed: _requirestAccess,
                     child: Text(
                       "Sure, I'd like that",
                       style: TextStyle(fontSize: 18),

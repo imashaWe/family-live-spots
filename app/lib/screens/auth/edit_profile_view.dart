@@ -154,7 +154,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                             backgroundImage: FileImage(File(_pickedFile!.path)),
                           )),
                 SizedBox(
-                  height: h / 12,
+                  height: 10,
                 ),
                 Expanded(
                     child: Form(

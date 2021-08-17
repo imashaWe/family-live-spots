@@ -94,21 +94,21 @@ class _AuthViewState extends State<AuthView> {
                 child: ElevatedButton.icon(
                     style: ButtonStyle(
                         padding: MaterialStateProperty.all(
-                            EdgeInsets.symmetric(vertical: 10)),
+                            EdgeInsets.symmetric(vertical: 7)),
                         backgroundColor: MaterialStateProperty.all(Colors.red),
                         shape: MaterialStateProperty.all(border)),
                     onPressed: _isLoading ? null : _signWithGoogle,
                     icon: Icon(FontAwesomeIcons.google),
                     label: Text("GOOGLE"))),
             SizedBox(
-              height: 20,
+              height: 10,
             ),
             SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
                     style: ButtonStyle(
                         padding: MaterialStateProperty.all(
-                            EdgeInsets.symmetric(vertical: 10)),
+                            EdgeInsets.symmetric(vertical: 7)),
                         backgroundColor:
                             MaterialStateProperty.all(Colors.blueAccent),
                         shape: MaterialStateProperty.all(border)),
@@ -116,14 +116,14 @@ class _AuthViewState extends State<AuthView> {
                     icon: Icon(FontAwesomeIcons.facebook),
                     label: Text("FACEBOOK"))),
             SizedBox(
-              height: 20,
+              height: 10,
             ),
             SizedBox(
                 width: double.infinity,
                 child: OutlinedButton.icon(
                     style: ButtonStyle(
                         padding: MaterialStateProperty.all(
-                            EdgeInsets.symmetric(vertical: 10)),
+                            EdgeInsets.symmetric(vertical: 7)),
                         shape: MaterialStateProperty.all(border)),
                     onPressed: _isLoading
                         ? null
@@ -131,7 +131,7 @@ class _AuthViewState extends State<AuthView> {
                     icon: Icon(FontAwesomeIcons.envelope),
                     label: Text("EMAIL"))),
             SizedBox(
-              height: h / 10,
+              height: h / 15,
             ),
             RichText(
                 textAlign: TextAlign.center,

@@ -52,7 +52,7 @@ class _SubscriptionViewState extends State<SubscriptionView> {
   Widget build(BuildContext context) {
     final w = MediaQuery.of(context).size.width;
     final h = MediaQuery.of(context).size.height;
-    final userProfile = Provider.of<UserProvide>(context, listen: false);
+    final userProfile = Provider.of<UserProvide>(context, listen: true);
 
     return Scaffold(
       body: Container(
@@ -84,17 +84,30 @@ class _SubscriptionViewState extends State<SubscriptionView> {
           Text(
             'Know Where Your\n Family is',
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headline4,
+            style: Theme.of(context).textTheme.headline5,
           ),
           Column(
               children: Constans.TRAIL_PACKAGE_LIST
-                  .map((e) => ListTile(
-                        leading: Icon(Icons.check),
-                        title: Text(e),
-                      ))
+                  .map(
+                    (e) => Padding(
+                        padding: EdgeInsets.symmetric(vertical: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(Icons.check),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              e,
+                              style: Theme.of(context).textTheme.subtitle1,
+                            )
+                          ],
+                        )),
+                  )
                   .toList()),
           Spacer(),
-          _isLoading
+          _isLoading || userProfile.profile == null
               ? CircularProgressIndicator()
               : Column(
                   children: [
@@ -103,7 +116,7 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                         child: ElevatedButton(
                             style: ButtonStyle(
                                 padding: MaterialStateProperty.all(
-                                    EdgeInsets.symmetric(vertical: 10)),
+                                    EdgeInsets.symmetric(vertical: 7)),
                                 shape: MaterialStateProperty.all(
                                     RoundedRectangleBorder(
                                         borderRadius:

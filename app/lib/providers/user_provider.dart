@@ -16,27 +16,22 @@ class UserProvide extends ChangeNotifier {
   bool get isLoading => profile == null;
 
   UserProvide() {
-    _initUserLisener(AuthService.user!.uid);
     _initAuthLisener();
   }
 
   void _initAuthLisener() {
     _userSubsription = _auth.authStateChanges().listen((user) {
       if (user != null) {
-        _initUserLisener(user.uid);
+        _subscription =
+            _firestore.collection('User').doc(user.uid).snapshots().listen((e) {
+          profile = UserProfile.fromJson(parseDataWithID(e));
+          notifyListeners();
+        });
       } else {
         profile == null;
         notifyListeners();
       }
     });
-  }
-
-  void _initUserLisener(String uid) {
-    _subscription =
-        _firestore.collection('User').doc(uid).snapshots().listen((e) {
-      profile = UserProfile.fromJson(parseDataWithID(e));
-    });
-    notifyListeners();
   }
 
   @override

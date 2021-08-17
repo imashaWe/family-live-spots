@@ -1,11 +1,11 @@
 import 'package:family_live_spots/models/user_profile.dart';
+import 'package:family_live_spots/screens/tabs/map/request_permission_modal.dart';
 import 'package:family_live_spots/screens/tabs/members/add/member_add.dart';
 import 'package:family_live_spots/screens/widget/error_view.dart';
 import 'package:family_live_spots/screens/widget/profile_image.dart';
 import 'package:family_live_spots/services/auth_service.dart';
 import 'package:family_live_spots/services/location_service.dart';
 import 'package:family_live_spots/services/member_service.dart';
-import 'package:family_live_spots/services/place_service.dart';
 import 'package:family_live_spots/utility/env.dart';
 import 'package:family_live_spots/utility/functions.dart';
 import 'package:flutter/gestures.dart';
@@ -114,15 +114,15 @@ class _MapViewState extends State<MapView> {
     print('[${bg.Event.LOCATION}] ERROR - $error');
   }
 
-  void _initLocationServices() {
-    LocationService.state.then((s) {
-      if (!s.enabled) {
-        Navigator.pushNamed(context, '/give-access');
-      } else {
-        LocationService.startTracking();
-        LocationService.onLocationChange(_onLocation, _onLocationError);
-      }
-    });
+  void _initLocationServices() async {
+    if (await LocationService.permisson.isAllPermissionGranetd) {
+      LocationService.startTracking();
+      LocationService.onLocationChange(_onLocation, _onLocationError);
+    } else {
+      showModalBottomSheet(
+          context: context, builder: (context) => RequestPermissionModal());
+      // Navigator.pushNamed(context, '/give-access');
+    }
   }
 
   @override
