@@ -17,7 +17,7 @@ class ENV {
 
   static const GOOGLE_API_KEY = 'AIzaSyCY1pALoCUIbruatByXPa-pyPtvNmF4f7o';
 
-  static const SUBSCRIPTION_PLAN_NAME = "FAMILY-LIVE-SPOTS-PRMIUM";
+  static const SUBSCRIPTION_PLAN_NAME = "fls_premium";
 
   static final CameraPosition INITIAL_LOCATION = CameraPosition(
     target: LatLng(37.42796133580664, -122.085749655962),

@@ -57,16 +57,16 @@ class _GiveAccessViewState extends State<GiveAccessView> {
                   }
                   return Column(
                     children: [
-                      // SwitchListTile(
-                      //     title: Text(
-                      //       "Location",
-                      //       style: TextStyle(color: Colors.blueGrey),
-                      //     ),
-                      //     subtitle: Text(
-                      //         "Required to share your location with members of your circle"),
-                      //     value: snapshot.data!.location,
-                      //     onChanged: (v) => LocationService.permisson
-                      //         .requestLocationPermission()),
+                      SwitchListTile(
+                          title: Text(
+                            "Location",
+                            style: TextStyle(color: Colors.blueGrey),
+                          ),
+                          subtitle: Text(
+                              "Required to share your location with members of your circle"),
+                          value: snapshot.data!.location,
+                          onChanged: (v) => LocationService.permisson
+                              .requestLocationPermission()),
                       SwitchListTile(
                           title: Text(
                             "Background location",

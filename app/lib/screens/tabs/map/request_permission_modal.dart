@@ -30,14 +30,20 @@ class _RequestPermissionModalState extends State<RequestPermissionModal> {
           ListTile(
             leading: Icon(Icons.my_location_sharp),
             title: Text('Location'),
+            subtitle: Text(
+                'Required to share your location with members of your circle'),
           ),
           ListTile(
             leading: Icon(FontAwesomeIcons.locationArrow),
             title: Text('Background location'),
+            subtitle: Text(
+                'Family Live Spots collects location data even when the app is closed or not in to provide your location history to yo and to memebrs of your circle.'),
           ),
           ListTile(
             leading: Icon(FontAwesomeIcons.running),
             title: Text('Physical activity'),
+            subtitle: Text(
+                'Required to provide more reliable location while improving battery life'),
           ),
           SizedBox(
             child: ElevatedButton(

@@ -1,10 +1,12 @@
 import 'package:family_live_spots/models/user_profile.dart';
 import 'package:family_live_spots/providers/user_provider.dart';
 import 'package:family_live_spots/screens/widget/alert_message.dart';
+import 'package:family_live_spots/screens/widget/error_view.dart';
 import 'package:family_live_spots/services/subsription_service.dart';
 import 'package:family_live_spots/utility/constants.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:provider/provider.dart';
 
 import '../verfiy_user.dart';
@@ -18,13 +20,13 @@ class SubscriptionView extends StatefulWidget {
 
 class _SubscriptionViewState extends State<SubscriptionView> {
   bool _isLoading = false;
+  Future<List<ProductDetails>>? _future;
 
-  void _tryLimitedVersion() {
-    AlertMessage.topSnackbarError(
-        message: 'Something went wrong', context: context);
-    // SubsriptionService.buy(productDetails)()
-    //     .then((value) => print(value))
-    //     .catchError((e) => print(e));
+  void _purchasePackage(ProductDetails product) {
+    SubsriptionService.buy(product)
+        .then((value) => print("Succees"))
+        .catchError((e) => AlertMessage.topSnackbarError(
+            message: 'Something went wrong', context: context));
   }
 
   void _restore() {
@@ -48,6 +50,13 @@ class _SubscriptionViewState extends State<SubscriptionView> {
   }
 
   void _setLoading(bool v) => setState(() => _isLoading = v);
+
+  @override
+  void initState() {
+    _future = SubsriptionService.getPlanes();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final w = MediaQuery.of(context).size.width;
@@ -107,9 +116,20 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                   )
                   .toList()),
           Spacer(),
-          _isLoading || userProfile.profile == null
-              ? CircularProgressIndicator()
-              : Column(
+          FutureBuilder<List<ProductDetails>>(
+              future: _future,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting ||
+                    _isLoading ||
+                    userProfile.profile == null)
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                if (snapshot.hasError) {
+                  return ErrorView();
+                }
+                final package = snapshot.data![0];
+                return Column(
                   children: [
                     SizedBox(
                         width: w * .9,
@@ -130,7 +150,7 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                               style: TextStyle(fontSize: 18),
                             ))),
                     TextButton(
-                        onPressed: _tryLimitedVersion,
+                        onPressed: () => _purchasePackage(package),
                         child: Text(
                           "Try Limited Version",
                           style: TextStyle(fontSize: 16),
@@ -149,7 +169,8 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                                   fontWeight: FontWeight.bold))
                         ])),
                   ],
-                )
+                );
+              }),
         ],
       )),
     );

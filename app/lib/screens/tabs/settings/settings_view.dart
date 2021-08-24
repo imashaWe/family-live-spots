@@ -1,6 +1,5 @@
 import 'package:family_live_spots/models/user_profile.dart';
 import 'package:family_live_spots/screens/auth/account/account.dart';
-import 'package:family_live_spots/screens/auth/_auth_view.dart';
 import 'package:family_live_spots/screens/auth/edit_profile_view.dart';
 import 'package:family_live_spots/screens/widget/error_view.dart';
 import 'package:family_live_spots/screens/widget/profile_image.dart';
