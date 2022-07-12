@@ -15,7 +15,7 @@ class ENV {
   static const DEFAULT_PHOTO_URL =
       "https://firebasestorage.googleapis.com/v0/b/filtersmusic-d259d.appspot.com/o/profile%2Ficons8-male-user-50.png?alt=media&token=ac73ba19-8176-43e0-963a-e84ad0b6e782";
 
-  static const GOOGLE_API_KEY = 'AIzaSyCY1pALoCUIbruatByXPa-pyPtvNmF4f7o';
+  static const GOOGLE_API_KEY = '_USER_KEY_HERE_';
 
   static const SUBSCRIPTION_PLAN_NAME = "fls_premium";
 
